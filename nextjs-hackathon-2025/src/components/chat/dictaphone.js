@@ -35,13 +35,9 @@ const Dictaphone = () => {
     { code: "sr-SP", name: "Serbian" },
   ];
 
-  if (!browserSupportsSpeechRecognition) {
-    alert("Browser does not support speech recongition");
-  }
-
-  if (!browserSupportsSpeechRecognition) {
-    return <span>Browser doesn't support speech recognition.</span>;
-  }
+  // if (!browserSupportsSpeechRecognition) {
+  //   alert("Browser does not support speech recongition");
+  // }
 
   return (
     <div className="bg-blue-200 p-4 rounded-lg  grid grid-cols-[auto_1fr_auto]">
