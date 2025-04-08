@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { RiVoiceprintFill } from "react-icons/ri";
 import Dictaphone from "./dictaphone";
 import AiChat from "./aiConversation";
+import AiVoice from "./aiAudio";
 
 const ChatScreen = () => {
   const [message, setMessage] = useState("");
@@ -36,6 +37,14 @@ const ChatScreen = () => {
     setMessage(newTranscript);
   };
 
+  const handleAudioSubmit = async (newVoice) => {
+    try {
+      AiVoice(newVoice);
+    } catch (error) {
+      console.log("error trying to get audio");
+    }
+  };
+
   return (
     <div className="flex flex-col space-y-4 p-4">
       <div
@@ -57,6 +66,14 @@ const ChatScreen = () => {
               }`}
             >
               <p>{msg.content}</p>
+              {msg.type === "ai" ? (
+                <button
+                  className="border-2 border-black rounded-md"
+                  onClick={() => handleAudioSubmit(msg.content)}
+                >
+                  Audio
+                </button>
+              ) : null}
             </div>
           </div>
         ))}
