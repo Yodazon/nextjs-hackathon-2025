@@ -1,7 +1,7 @@
 import { ElevenLabs, ElevenLabsClient, play } from "elevenlabs";
 
 const client = new ElevenLabsClient({
-  apiKey: process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY,
+  apiKey: process.env.ELEVENLABS_API_KEY,
 });
 const AiVoice = async (message) => {
   try {
