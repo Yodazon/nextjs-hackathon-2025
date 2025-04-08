@@ -1,31 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { RiVoiceprintFill } from "react-icons/ri";
+import Dictaphone from "@/components/chat/dictaphone";
+import ChatScreen from "@/components/chat/chat";
+
+import React, { useState } from "react";
 
 export default function Home() {
   return (
     <div className="grid grid-rows min-h-screen">
       <header className="bg-gray-400">This if for a header</header>
 
-      <main className="flex flex-col space-y-4 p-4">
-        <div
-          id="conversation-box"
-          className="h-[60vh] w-2/3 border-black border-2 rounded-lg p-4 overflow-y-auto mx-auto "
-        >
-          This is where the conversation will appear
-        </div>
-        <div id="chat-box" className="w-2/3 mx-auto ">
-          <div className="bg-blue-200 p-4 rounded-lg  grid grid-cols-[auto_1fr_auto]">
-            <Link href="" className="bg-gray-400 p-2 rounded-xl block w-8">
-              <RiVoiceprintFill />
-            </Link>
-
-            <p className="mt-2 px-10">Recorded text would appear here</p>
-            <Link href="" className="bg-gray-400 p-2 rounded-xl block w-15">
-              Send
-            </Link>
-          </div>
-        </div>
+      <main>
+        <ChatScreen />
       </main>
 
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center bg-gray-400">
