@@ -10,7 +10,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 
-const Dictaphone = () => {
+const Dictaphone = ({ onTranscriptChange }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("en-CA");
 
   const {
@@ -19,6 +19,13 @@ const Dictaphone = () => {
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
+
+  const handleSend = () => {
+    if (transcript) {
+      onTranscriptChange(transcript);
+      resetTranscript();
+    }
+  };
 
   const startListening = () => {
     SpeechRecognition.startListening({
@@ -68,7 +75,12 @@ const Dictaphone = () => {
         <p className="mt-2 px-10">Recorded text would appear here</p>
       )}
 
-      <button className="bg-gray-400 p-2 rounded-xl block w-15">Send</button>
+      <button
+        className="bg-gray-400 p-2 rounded-xl block w-15"
+        onClick={handleSend}
+      >
+        Send
+      </button>
     </div>
   );
 };
