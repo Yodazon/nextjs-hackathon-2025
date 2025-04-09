@@ -1,38 +1,28 @@
-import { ElevenLabs, ElevenLabsClient, play } from "elevenlabs";
-
-const client = new ElevenLabsClient({
-  apiKey: process.env.ELEVENLABS_API_KEY,
-});
 const AiVoice = async (message) => {
   try {
-    const audioStream = await client.textToSpeech.convertAsStream(
-      "ThT5KcBeYPX3keUQqHPh",
-      {
-        text: message,
-        model_id: "eleven_flash_v2_5",
-        output_format: "mp3_44100_128",
-      }
-    );
+    const response = await fetch("/api/elevenLabs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message }),
+    });
 
-    // Collect all chunks
-    const chunks = [];
-    for await (const chunk of audioStream) {
-      chunks.push(chunk);
+    if (!response.ok) {
+      throw new Error("Failed to get audio");
     }
 
-    // Combine chunks into a single Blob
-    const audioBlob = new Blob(chunks, { type: "audio/mpeg" });
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audioElement = new Audio(audioUrl);
+    const blob = await response.blob();
+    const audioUrl = URL.createObjectURL(blob);
+    const audio = new Audio(audioUrl);
 
-    await audioElement.play();
+    await audio.play();
 
-    // Cleanup
-    audioElement.onended = () => {
+    audio.onended = () => {
       URL.revokeObjectURL(audioUrl);
     };
   } catch (error) {
-    console.error("Error playing audio:", error);
+    console.error("Audio playback error:", error);
   }
 };
 export default AiVoice;
