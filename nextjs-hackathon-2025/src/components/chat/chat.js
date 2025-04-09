@@ -7,7 +7,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { RiVoiceprintFill } from "react-icons/ri";
+import { RiVoiceprintFill, RiRobot2Line } from "react-icons/ri";
 import Dictaphone from "./dictaphone";
 import AiChat from "./aiConversation";
 import AiVoice from "./aiAudio";
@@ -15,16 +15,53 @@ import AiVoice from "./aiAudio";
 const ChatScreen = () => {
   const [message, setMessage] = useState("");
   const [conversations, setConversations] = useState([]);
+  const [currentBot, setCurrentBot] = useState("conversational");
+  const [showBotSelector, setShowBotSelector] = useState(false);
+
+  const bots = {
+    conversational: {
+      name: "Chat Bot",
+      pipeName: "base-conversational",
+      icon: "💬",
+      voice: "ThT5KcBeYPX3keUQqHPh",
+    },
+    quiz: {
+      name: "Quiz Master",
+      pipeName: "tester-ai",
+      icon: "❓",
+      voice: "ThT5KcBeYPX3keUQqHPh",
+    },
+  };
 
   const handleTranscriptChange = async (newTranscript) => {
-    setConversations((prev) => [
-      ...prev,
+    const updatedConversations = [
+      ...conversations,
       { type: "user", content: newTranscript },
-    ]);
+    ];
+    setConversations(updatedConversations);
+
+    //Check if quiz or not using the English Language
+    const wantsQuiz =
+      newTranscript.toLowerCase().includes("quiz") ||
+      newTranscript.toLowerCase().includes("test");
+
+    if (wantsQuiz && currentBot !== "quiz") {
+      setCurrentBot("quiz");
+    }
+
+    //Create messages array with convo history
+    const messageHistory = updatedConversations.map((msg) => ({
+      role: msg.type === "user" ? "user" : "assistant",
+      content: msg.content,
+    }));
 
     //Trigger AI response
     try {
-      const aiResponse = await AiChat(newTranscript);
+      const aiResponse = await AiChat(
+        newTranscript,
+        messageHistory,
+        bots[currentBot].pipeName
+      );
       if (aiResponse) {
         setConversations((prev) => [
           ...prev,
@@ -45,8 +82,60 @@ const ChatScreen = () => {
     }
   };
 
+  const BotSelector = () => (
+    <div
+      className={`
+      fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center
+      ${showBotSelector ? "block" : "hidden"}
+    `}
+    >
+      <div className="bg-white p-6 rounded-lg shadow-xl">
+        <h2 className="text-xl font-bold mb-4">Select AI Bot</h2>
+        <div className="flex flex-col gap-3">
+          {Object.entries(bots).map(([botId, bot]) => (
+            <button
+              key={botId}
+              className={`
+                p-3 rounded-lg flex items-center gap-2
+                ${
+                  currentBot === botId
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-100"
+                }
+              `}
+              onClick={() => {
+                setCurrentBot(botId);
+                setShowBotSelector(false);
+              }}
+            >
+              <span>{bot.icon}</span>
+              {bot.name}
+            </button>
+          ))}
+        </div>
+        <button
+          className="mt-4 p-2 bg-gray-200 rounded-lg w-full"
+          onClick={() => setShowBotSelector(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col space-y-4 p-4">
+      <div className="flex justify-between items-center w-2/3 mx-auto">
+        <h2 className="text-lg font-semibold">
+          {bots[currentBot].icon} {bots[currentBot].name}
+        </h2>
+        <button
+          className="p-2 bg-gray-100 rounded-lg flex items-center gap-2"
+          onClick={() => setShowBotSelector(true)}
+        >
+          <RiRobot2Line /> Switch Bot
+        </button>
+      </div>
       <div
         id="conversation-box"
         className="h-[60vh] w-2/3 border-black border-2 rounded-lg p-4 overflow-y-auto mx-auto "
@@ -81,6 +170,7 @@ const ChatScreen = () => {
       <div id="chat-box" className="w-2/3 mx-auto ">
         <Dictaphone onTranscriptChange={handleTranscriptChange} />
       </div>
+      <BotSelector />
     </div>
   );
 };

@@ -39,7 +39,6 @@ const Dictaphone = ({ onTranscriptChange }) => {
     { code: "es-ES", name: "Spanish" },
     { code: "fr-FR", name: "French" },
     { code: "pl", name: "Polish" },
-    { code: "sr-SP", name: "Serbian" },
   ];
 
   // if (!browserSupportsSpeechRecognition) {

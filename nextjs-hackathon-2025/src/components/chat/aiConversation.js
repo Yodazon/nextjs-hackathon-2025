@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { getRunner } from "langbase";
+const AiChat = async (message, messageHistory, pipeName) => {
+  console.log("Current message:", message);
+  console.log("Message history:", messageHistory);
+  console.log("Using Pipe: ", pipeName);
 
-const AiChat = async (message) => {
-  console.log(message);
   try {
     const response = await fetch("/api/langbase/run-agent", {
       method: "POST",
@@ -11,18 +11,18 @@ const AiChat = async (message) => {
       },
       body: JSON.stringify({
         stream: false,
-        messages: [{ role: "user", content: message }],
+        messages: messageHistory,
+        pipeName: pipeName,
         // variables: [{ name: "user", value: message }],
       }),
     });
 
+    const data = await response.json();
     if (!response.ok) {
       const errorData = await response.json();
 
       throw new Error(errorData.error || "Request failed");
     }
-
-    const data = await response.json();
 
     return data.message;
   } catch (error) {
