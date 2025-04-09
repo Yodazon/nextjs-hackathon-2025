@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@11labs/react": "^0.1.2",
+    "elevenlabs": "^1.56.0",
     "langbase": "^1.1.55",
     "next": "15.2.4",
     "react": "^19.0.0",
