@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@11labs/react": "^0.1.2",
+    "convex": "^1.23.0",
     "elevenlabs": "^1.56.0",
     "langbase": "^1.1.55",
     "next": "15.2.4",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",

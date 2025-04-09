@@ -1,19 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import Dictaphone from "@/components/chat/dictaphone";
-import ChatScreen from "@/components/chat/chat";
-
-import React, { useState } from "react";
+import ChatScreen from "@/components/chat/chatScreen";
+import SignIn from "./auth/signin/page";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const { data: session, status } = useSession();
+
   return (
     <div className="grid grid-rows min-h-screen">
-      <header className="bg-gray-400">This if for a header</header>
+      <header className="bg-gray-400"></header>
 
       <main>
-        <ChatScreen />
+        {status === "loading" ? (
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+          </div>
+        ) : !session ? (
+          <SignIn />
+        ) : (
+          <ChatScreen />
+        )}
       </main>
 
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center bg-gray-400">
