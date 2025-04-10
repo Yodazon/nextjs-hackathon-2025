@@ -76,15 +76,15 @@ const ChatScreen = () => {
 
     // Use the actual message history from Convex
     const convexMessages = messageHistory || [];
-    const formattedMessages = convexMessages.map(msg => ({
+    const formattedMessages = convexMessages.map((msg) => ({
       role: msg.role,
-      content: msg.content
+      content: msg.content,
     }));
 
     // Add the current message to the history
     formattedMessages.push({
       role: "user",
-      content: newTranscript
+      content: newTranscript,
     });
 
     //Trigger AI response

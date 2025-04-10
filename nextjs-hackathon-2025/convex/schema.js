@@ -9,4 +9,13 @@ export default defineSchema({
     botType: v.string(),
     timestamp: v.number(),
   }).index("by_user_and_bot", ["userId", "botType"]),
+
+  users: defineTable({
+    email: v.string(),
+    name: v.string(),
+    image: v.union(v.string(), v.null()),
+    googleId: v.union(v.string(), v.null()),
+    password: v.union(v.string(), v.null()),
+    createdAt: v.number(),
+  }).index("by_email", ["email"]),
 });

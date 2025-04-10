@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@11labs/react": "^0.1.2",
+    "bcryptjs": "^3.0.2",
     "convex": "^1.23.0",
     "elevenlabs": "^1.56.0",
     "langbase": "^1.1.55",
