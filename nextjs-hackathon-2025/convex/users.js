@@ -62,22 +62,25 @@ export const createUser = mutation({
       }
     }
 
-    // Hash password if provided
-    let hashedPassword = null;
-    if (password) {
-      hashedPassword = await bcrypt.hash(password, 10);
-    }
-
-    // Create new user
-    const userId = await ctx.db.insert("users", {
+    // Create user data object
+    const userData = {
       email,
       name: name || email.split("@")[0],
       image,
       googleId,
-      password: hashedPassword,
-      createdAt: Date.now(),
-    });
+      emailVerified: Date.now(),
+    };
 
+    // Only add password if provided
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      userData.password = hashedPassword;
+    } else {
+      userData.password = null;
+    }
+
+    // Create new user
+    const userId = await ctx.db.insert("users", userData);
     return await ctx.db.get(userId);
   },
 });

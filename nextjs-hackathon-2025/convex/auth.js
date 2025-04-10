@@ -21,6 +21,33 @@ export const comparePassword = action({
   },
 });
 
+export const verifyPassword = mutation({
+  args: {
+    email: v.string(),
+    password: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { email, password } = args;
+
+    // Find user by email
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // For now, we're comparing plain text passwords
+    if (user.password !== password) {
+      throw new Error("Invalid password");
+    }
+
+    return user;
+  },
+});
+
 export const createUserWithPassword = mutation({
   args: {
     email: v.string(),
@@ -44,17 +71,13 @@ export const createUserWithPassword = mutation({
       throw new Error("User already exists");
     }
 
-    // Hash password using action
-    const hashedPassword = await ctx.runAction(hashPassword, { password });
-
-    // Create new user
+    // Create new user with plain text password
     const userId = await ctx.db.insert("users", {
       email,
       name: name || email.split("@")[0],
       image: null,
-      googleId: null,
-      password: hashedPassword,
-      createdAt: Date.now(),
+      emailVerified: Date.now(),
+      password: password,
     });
 
     return await ctx.db.get(userId);

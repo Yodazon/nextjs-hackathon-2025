@@ -1,6 +1,12 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { SignJWT } from "jose";
+
+const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_URL?.replace(
+  /.cloud$/,
+  ".site"
+) || "";
 
 const handler = NextAuth({
   providers: [
@@ -49,7 +55,6 @@ const handler = NextAuth({
     async signIn({ user, account, profile }) {
       if (account?.provider === "google") {
         try {
-          // Create or update user using the existing API route
           const response = await fetch(process.env.NEXTAUTH_URL + "/api/create-user", {
             method: "POST",
             headers: {
@@ -93,6 +98,25 @@ const handler = NextAuth({
         session.user.id = token.id;
         if (token.googleId) {
           session.user.googleId = token.googleId;
+        }
+
+        // Generate Convex token using a simple secret
+        if (process.env.CONVEX_AUTH_SECRET) {
+          try {
+            const convexToken = await new SignJWT({
+              sub: token.id,
+            })
+              .setProtectedHeader({ alg: "HS256" })
+              .setIssuedAt()
+              .setIssuer(CONVEX_SITE_URL)
+              .setAudience("convex")
+              .setExpirationTime("1h")
+              .sign(new TextEncoder().encode(process.env.CONVEX_AUTH_SECRET));
+
+            session.convexToken = convexToken;
+          } catch (error) {
+            console.error("Error generating Convex token:", error);
+          }
         }
       }
       return session;
