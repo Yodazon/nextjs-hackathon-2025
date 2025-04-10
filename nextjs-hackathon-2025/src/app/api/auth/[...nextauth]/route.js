@@ -1,32 +1,10 @@
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { UpstashRedisAdapter } from '@auth/upstash-redis-adapter';
+import redis from '@/lib/redis';
+import providers from '@/lib/providers';
 
 const handler = NextAuth({
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        console.log("Authorizing credentials:", credentials);
-        
-        // This is where you would typically validate the credentials against your database
-        // For now, we'll use a simple hardcoded check
-        if (credentials?.username === "test" && credentials?.password === "test") {
-          console.log("Credentials valid, returning user");
-          return {
-            id: "1",
-            name: "Test User",
-            email: "test@example.com",
-          };
-        }
-        console.log("Invalid credentials");
-        return null;
-      }
-    })
-  ],
+  providers,
   pages: {
     signIn: "/auth/signin",
   },
@@ -51,6 +29,7 @@ const handler = NextAuth({
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  adapter: UpstashRedisAdapter(redis),
   secret: process.env.NEXTAUTH_SECRET || "your-secret-key",
 });
 

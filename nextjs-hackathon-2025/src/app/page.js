@@ -4,13 +4,14 @@ import Image from "next/image";
 import ChatScreen from "@/components/chat/chatScreen";
 import SignIn from "./auth/signin/page";
 import { useSession } from "next-auth/react";
+import SignOutButton from "@/components/SignOutButton";
 
 export default function Home() {
   const { data: session, status } = useSession();
 
   return (
     <div className="grid grid-rows min-h-screen">
-      <header className="bg-gray-400"></header>
+      <header className="bg-gray-400"> <SignOutButton /></header>
 
       <main>
         {status === "loading" ? (
