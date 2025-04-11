@@ -6,28 +6,24 @@
 // This is handling the chat underneath with users and the chat with the screen
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RiVoiceprintFill, RiRobot2Line } from "react-icons/ri";
 import Dictaphone from "./dictaphone";
 import AiChat from "./aiConversation";
 import AiVoice from "./aiAudio";
 import { useSession } from "next-auth/react";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { useRAGChat } from "@/lib/useRAGChat";
+import { getConversationHistory, getRelevantContext } from "@/lib/embeddings";
 
 const ChatScreen = () => {
   const [message, setMessage] = useState("");
   const [conversations, setConversations] = useState([]);
   const [currentBot, setCurrentBot] = useState("conversational");
   const [showBotSelector, setShowBotSelector] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Following set of code was made with the help of copilot for Convex implementation
   const { data: session } = useSession();
-  const storeMessage = useMutation(api.messages.storeMessage);
-  const messageHistory = useQuery(api.messages.getMessageHistory, {
-    userId: session?.user?.id || "",
-    botType: currentBot,
-  });
+  const { storeChatHistory, isStoring, error } = useRAGChat();
 
   const bots = {
     conversational: {
@@ -35,29 +31,49 @@ const ChatScreen = () => {
       pipeName: "base-conversational",
       icon: "💬",
       voice: "ThT5KcBeYPX3keUQqHPh",
+      id: "conversational",
     },
     quiz: {
       name: "Quiz Master",
       pipeName: "tester-ai",
       icon: "❓",
       voice: "ThT5KcBeYPX3keUQqHPh",
+      id: "quiz",
     },
   };
 
+  // Load conversation history when user logs in
+  useEffect(() => {
+    async function loadHistory() {
+      if (session?.user?.id) {
+        console.log(session?.user?.id);
+        try {
+          setIsLoading(true);
+          const history = await getConversationHistory(session.user.id);
+          console.log("history below me");
+          console.log(history);
+          // Convert history to conversations format and set it
+          const formattedHistory = history.map((msg) => ({
+            type: msg.role === "user" ? "user" : "ai",
+            content: msg.content,
+          }));
+          setConversations(formattedHistory);
+        } catch (error) {
+          console.log("no history eh");
+          console.error("Error loading conversation history:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
+    loadHistory();
+  }, [session?.user?.id]);
+
   const handleTranscriptChange = async (newTranscript) => {
-    //Copilot Convex code
     if (!session?.user) {
       alert("please sign in to continue");
       return;
     }
-
-    // Store user message
-    await storeMessage({
-      userId: session.user.id,
-      content: newTranscript,
-      role: "user",
-      botType: currentBot,
-    });
 
     const updatedConversations = [
       ...conversations,
@@ -74,42 +90,42 @@ const ChatScreen = () => {
       setCurrentBot("quiz");
     }
 
-    // Use the actual message history from Convex
-    const convexMessages = messageHistory || [];
-    const formattedMessages = convexMessages.map(msg => ({
-      role: msg.role,
-      content: msg.content
-    }));
+    // Get relevant context from previous conversations
+    const context = await getRelevantContext(session.user.id, newTranscript);
 
-    // Add the current message to the history
-    formattedMessages.push({
-      role: "user",
-      content: newTranscript
-    });
-
-    //Trigger AI response
+    //Trigger AI response with context
     try {
       const aiResponse = await AiChat(
         newTranscript,
-        formattedMessages,
+        [
+          ...context,
+          ...updatedConversations.map((msg) => ({
+            role: msg.type === "user" ? "user" : "assistant",
+            content: msg.content,
+          })),
+        ],
         bots[currentBot].pipeName
       );
-      if (aiResponse) {
-        // Store AI response - CONVEX CODE
-        await storeMessage({
-          userId: session.user.id,
-          content: aiResponse,
-          role: "assistant",
-          botType: currentBot,
-        });
 
-        setConversations((prev) => [
-          ...prev,
+      if (aiResponse) {
+        const newConversations = [
+          ...updatedConversations,
           { type: "ai", content: aiResponse },
-        ]);
+        ];
+        setConversations(newConversations);
+
+        // Store the conversation history in Upstash Vector
+        await storeChatHistory(
+          newConversations.map((msg) => ({
+            role: msg.type === "user" ? "user" : "assistant",
+            content: msg.content,
+            botType: msg.type === "user" ? null : bots[currentBot].name,
+            pipeName: msg.type === "user" ? null : bots[currentBot].pipeName,
+          }))
+        );
       }
     } catch (error) {
-      console.error("Error getting AI repsonse", error);
+      console.error("Error getting AI response", error);
     }
     setMessage(newTranscript);
   };
@@ -214,4 +230,5 @@ const ChatScreen = () => {
     </div>
   );
 };
+
 export default ChatScreen;

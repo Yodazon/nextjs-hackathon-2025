@@ -5,7 +5,6 @@ const CONVERSATION_PIPE_API_KEY =
 const TESTER_PIPE_API_KEY = process.env.LANGBASE_TESTER_AI_API_KEY;
 
 export async function POST(req) {
-  console.log("POST FUNCTION WORKING");
   try {
     //Get request body from the client
     const body = await req.json();
@@ -19,31 +18,35 @@ export async function POST(req) {
       !CONVERSATION_PIPE_API_KEY ||
       !TESTER_PIPE_API_KEY
     ) {
-      throw new Error("Missing API keys");
+      return Response.json({ error: "Missing API keys" }, { status: 500 });
     }
 
     const langbase = new Langbase({
       apiKey: process.env.LANGBASE_API_KEY,
     });
 
-    let API_KEY =
+    const API_KEY =
       pipeName === "base-conversational"
         ? CONVERSATION_PIPE_API_KEY
         : TESTER_PIPE_API_KEY;
 
-    //STREAM
     if (shouldStream) {
-      const { stream } = await langbase.pipes.run({
-        stream: true,
-        messages,
-        variables,
-        name: pipeName,
-        apiKey: API_KEY,
-      });
-      return new Response(stream, { status: 200 });
+      try {
+        const { stream } = await langbase.pipes.run({
+          stream: true,
+          messages,
+          variables,
+          name: pipeName,
+          apiKey: API_KEY,
+        });
+        return new Response(stream, {
+          headers: { "Content-Type": "text/event-stream" },
+        });
+      } catch (streamError) {
+        return Response.json({ error: streamError.message }, { status: 500 });
+      }
     }
-    //NOT STREAM
-    console.log("running stream code");
+
     const { completion } = await langbase.pipes.run({
       stream: false,
       messages,
@@ -54,7 +57,7 @@ export async function POST(req) {
 
     return Response.json({ message: completion });
   } catch (error) {
-    console.log("Uncaught API Error:", error);
-    return Response(JSON.stringify(error), { status: 500 });
+    console.error("API Error:", error);
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }
