@@ -29,6 +29,8 @@ export async function POST(req) {
 
     const buffer = Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
 
+    console.log("This is the stream");
+    console.log(stream)
     return new NextResponse(buffer, {
       headers: {
         "Content-Type": "audio/mpeg",

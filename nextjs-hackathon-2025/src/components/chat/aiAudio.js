@@ -6,8 +6,8 @@ const AiVoice = async (message) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ message }),
+      
     });
-
     if (!response.ok) {
       throw new Error("Failed to get audio");
     }
