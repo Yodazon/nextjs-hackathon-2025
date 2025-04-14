@@ -1,7 +1,7 @@
 // For Polar checkout
 // checkout/route.js
-import { Checkout } from "@polar-sh/nextjs";
 import { NextResponse } from 'next/server';
+import { api } from '@/polar';
 
 export async function GET(request) {
   try {
@@ -24,19 +24,26 @@ export async function GET(request) {
     console.log("formattedProductId");
     console.log(formattedProductId);
 
-    const checkoutUrl = await Checkout({
-      accessToken: process.env.POLAR_ACCESS_TOKEN,
+    // Create a checkout session
+    const checkoutSession = await api.checkout.sessions.create({
+      productId: formattedProductId,
       successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/upgrade/success`,
       cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/upgrade`,
-      productId: formattedProductId,
-      embedOrigin: process.env.NEXT_PUBLIC_APP_URL
+      embedOrigin: process.env.NEXT_PUBLIC_APP_URL,
+      mode: 'subscription',
+      allowPromotionCodes: true,
+      billingAddressCollection: 'required',
+      customerEmail: null, // Will be collected during checkout
+      metadata: {
+        environment: 'sandbox'
+      }
     });
    
-    if (!checkoutUrl) {
+    if (!checkoutSession?.url) {
       throw new Error('Failed to generate checkout URL');
     }
 
-    return NextResponse.json({ url: checkoutUrl });
+    return NextResponse.json({ url: checkoutSession.url });
   } catch (error) {
     console.error('Error creating checkout session:', error);
     return NextResponse.json(
