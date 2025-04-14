@@ -57,7 +57,10 @@ export default function SignIn() {
           </h2>
         </div>
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            role="alert"
+          >
             <span className="block sm:inline">{error}</span>
           </div>
         )}
@@ -108,7 +111,9 @@ export default function SignIn() {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">Or continue with</span>
+              <span className="px-2 bg-gray-50 text-gray-500">
+                Or continue with
+              </span>
             </div>
           </div>
 
@@ -123,11 +128,14 @@ export default function SignIn() {
         </div>
 
         <div className="text-sm text-center">
-          <Link href="/auth/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+          <Link
+            href="/auth/signup"
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
             Don't have an account? Sign up
           </Link>
         </div>
       </div>
     </div>
   );
-} 
+}
