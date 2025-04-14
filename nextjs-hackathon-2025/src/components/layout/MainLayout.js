@@ -3,16 +3,17 @@
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { 
-  RiMenuLine, 
-  RiCloseLine, 
-  RiHomeLine, 
-  RiChat1Line, 
+import {
+  RiMenuLine,
+  RiCloseLine,
+  RiHomeLine,
+  RiChat1Line,
   RiSettingsLine,
   RiUserLine,
   RiLogoutBoxLine,
   RiBarChartLine,
-  RiMoneyDollarCircleLine
+  RiMoneyDollarCircleLine,
+  RiBook3Line,
 } from "react-icons/ri";
 
 const MainLayout = ({ children }) => {
@@ -25,10 +26,11 @@ const MainLayout = ({ children }) => {
 
   const navItems = [
     { href: "/", icon: <RiHomeLine />, label: "Home" },
+    { href: "/lessons", icon: <RiBook3Line />, label: "Lessons" },
     { href: "/stats", icon: <RiBarChartLine />, label: "Stats" },
     { href: "/chat", icon: <RiChat1Line />, label: "Chat" },
     { href: "/settings", icon: <RiSettingsLine />, label: "Settings" },
-    { href: "/upgrade", icon: <RiMoneyDollarCircleLine />, label: "Upgrade"}
+    { href: "/upgrade", icon: <RiMoneyDollarCircleLine />, label: "Upgrade" },
   ];
 
   return (
@@ -42,7 +44,11 @@ const MainLayout = ({ children }) => {
                 onClick={toggleSidebar}
                 className="p-2 rounded-md text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 lg:hidden"
               >
-                {isSidebarOpen ? <RiCloseLine size={24} /> : <RiMenuLine size={24} />}
+                {isSidebarOpen ? (
+                  <RiCloseLine size={24} />
+                ) : (
+                  <RiMenuLine size={24} />
+                )}
               </button>
               <Link href="/" className="ml-4 text-xl font-bold text-blue-600">
                 AI Assistant
@@ -123,10 +129,16 @@ const MainLayout = ({ children }) => {
               © {new Date().getFullYear()} AI Assistant. All rights reserved.
             </p>
             <div className="flex space-x-4">
-              <Link href="/privacy" className="text-gray-500 hover:text-gray-700 text-sm">
+              <Link
+                href="/privacy"
+                className="text-gray-500 hover:text-gray-700 text-sm"
+              >
                 Privacy
               </Link>
-              <Link href="/terms" className="text-gray-500 hover:text-gray-700 text-sm">
+              <Link
+                href="/terms"
+                className="text-gray-500 hover:text-gray-700 text-sm"
+              >
                 Terms
               </Link>
             </div>
@@ -137,4 +149,4 @@ const MainLayout = ({ children }) => {
   );
 };
 
-export default MainLayout; 
+export default MainLayout;
