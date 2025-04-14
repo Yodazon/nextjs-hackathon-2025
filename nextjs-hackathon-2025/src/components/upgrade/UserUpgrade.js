@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import MainLayout from "../layout/MainLayout";
 import { TIERS, getUserTier } from '@/lib/userTier';
+import { PolarEmbedCheckout } from '@polar-sh/checkout/embed';
+import PurchaseLink from './PurchaseLink';
 
 const CheckIcon = ({ className }) => (
   <svg
@@ -146,6 +148,29 @@ const UserUpgrade = () => {
   const [currentTier, setCurrentTier] = useState(TIERS.FREE);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    // Initialize Polar checkout once at the component level
+    if (!initialized.current) {
+      PolarEmbedCheckout.init();
+      initialized.current = true;
+    }
+
+    return () => {
+      // Cleanup function
+      if (initialized.current) {
+        try {
+          const modal = document.querySelector('[data-polar-checkout-modal]');
+          if (modal) {
+            modal.remove();
+          }
+        } catch (error) {
+          console.error('Error cleaning up Polar checkout:', error);
+        }
+      }
+    };
+  }, []);
 
   const loadTier = async () => {
     try {
@@ -169,23 +194,29 @@ const UserUpgrade = () => {
 
   const handleUpgrade = async (productId) => {
     try {
-      const response = await fetch('/api/polar/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productId }),
+      // Extract the product ID from the URL if it's a full URL
+      const productIdMatch = productId.match(/polar_cl_[A-Za-z0-9]+/);
+      const extractedProductId = productIdMatch ? productIdMatch[0] : productId;
+
+      const response = await fetch(`/api/polar/checkout?productId=${extractedProductId}`, {
+        method: 'GET',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create checkout session');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create checkout session');
       }
 
-      const { url } = await response.json();
-      window.location.href = url;
+      const data = await response.json();
+      
+      if (!data.url) {
+        throw new Error('No checkout URL received');
+      }
+
+      setCheckoutUrl(data.url);
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      setError('Failed to create checkout session. Please try again.');
+      setError(error.message || 'Failed to create checkout session. Please try again.');
     }
   };
 
@@ -245,18 +276,23 @@ const UserUpgrade = () => {
                 </ul>
               </div>
               <div className="p-6 border-t border-gray-200 rounded-b-lg bg-gray-50">
-                <button
-                  onClick={() => plan.productId && handleUpgrade(plan.productId)}
-                  disabled={!plan.productId || plan.tier === currentTier}
-                  className={`block w-full px-4 py-2 font-medium text-center text-white transition-colors rounded-lg ${
-                    plan.tier === currentTier
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : plan.buttonStyle
-                  }`}
-                >
-                  {plan.tier === currentTier ? 'Current Plan' : plan.buttonText}
-                  {plan.tier !== currentTier && <ArrowIcon />}
-                </button>
+                {plan.tier === currentTier ? (
+                  <button
+                    disabled
+                    className="block w-full px-4 py-2 font-medium text-center text-white bg-gray-400 rounded-lg cursor-not-allowed"
+                  >
+                    Current Plan
+                  </button>
+                ) : (
+                  <PurchaseLink
+                    href={plan.productId}
+                    className={`block w-full px-4 py-2 font-medium text-center text-white transition-colors rounded-lg ${plan.buttonStyle}`}
+                    theme="light"
+                  >
+                    {plan.buttonText}
+                    <ArrowIcon />
+                  </PurchaseLink>
+                )}
               </div>
             </div>
           </div>
