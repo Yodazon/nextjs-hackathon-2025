@@ -1,6 +1,7 @@
 "use client";
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from "react";
 import { RiVoiceprintFill, RiRobot2Line } from "react-icons/ri";
 import Dictaphone from "./dictaphone";
@@ -9,133 +10,32 @@ import AiVoice from "./aiAudio";
 import { useSession } from "next-auth/react";
 import { useRAGChat } from "@/lib/useRAGChat";
 import { getConversationHistory, getRelevantContext } from "@/lib/embeddings";
+=======
+>>>>>>> Stashed changes
 import MainLayout from "../layout/MainLayout";
+import BaseChatScreen from "./mainChatComponent";
+
+const bots = {
+  conversational: {
+    name: "Chat Bot",
+    pipeName: "base-conversational",
+    icon: "💬",
+    voice: "ThT5KcBeYPX3keUQqHPh",
+    id: "conversational",
+  },
+  quiz: {
+    name: "Quiz Master",
+    pipeName: "tester-ai",
+    icon: "❓",
+    voice: "ThT5KcBeYPX3keUQqHPh",
+    id: "quiz",
+  },
+};
 
 const ChatScreen = () => {
-  const [message, setMessage] = useState("");
-  const [conversations, setConversations] = useState([]);
-  const [currentBot, setCurrentBot] = useState("conversational");
-  const [showBotSelector, setShowBotSelector] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { data: session } = useSession();
-  const { storeChatHistory, isStoring, error } = useRAGChat();
-
-  const bots = {
-    conversational: {
-      name: "Chat Bot",
-      pipeName: "base-conversational",
-      icon: "💬",
-      voice: "ThT5KcBeYPX3keUQqHPh",
-      id: "conversational",
-    },
-    quiz: {
-      name: "Quiz Master",
-      pipeName: "tester-ai",
-      icon: "❓",
-      voice: "ThT5KcBeYPX3keUQqHPh",
-      id: "quiz",
-    },
-  };
-
-  // Load conversation history when user logs in
-  useEffect(() => {
-    async function loadHistory() {
-      if (session?.user?.id) {
-        console.log(session?.user?.id);
-        try {
-          setIsLoading(true);
-          const history = await getConversationHistory(session.user.id);
-          console.log("history below me");
-          console.log(history);
-          // Convert history to conversations format and set it
-          const formattedHistory = history.map((msg) => ({
-            type: msg.role === "user" ? "user" : "ai",
-            content: msg.content,
-          }));
-          setConversations(formattedHistory);
-        } catch (error) {
-          console.log("no history eh");
-          console.error("Error loading conversation history:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    }
-    loadHistory();
-  }, [session?.user?.id]);
-
-  const handleTranscriptChange = async (newTranscript) => {
-    if (!session?.user) {
-      alert("please sign in to continue");
-      return;
-    }
-
-    const updatedConversations = [
-      ...conversations,
-      { type: "user", content: newTranscript },
-    ];
-    setConversations(updatedConversations);
-
-    //Check if quiz or not using the English Language
-    const wantsQuiz =
-      newTranscript.toLowerCase().includes("quiz") ||
-      newTranscript.toLowerCase().includes("test");
-
-    if (wantsQuiz && currentBot !== "quiz") {
-      setCurrentBot("quiz");
-    }
-
-    // Get relevant context from previous conversations
-    const context = await getRelevantContext(session.user.id, newTranscript);
-
-    //Trigger AI response with context
-    try {
-      const aiResponse = await AiChat(
-        newTranscript,
-        [
-          ...context,
-          ...updatedConversations.map((msg) => ({
-            role: msg.type === "user" ? "user" : "assistant",
-            content: msg.content,
-          })),
-        ],
-        bots[currentBot].pipeName
-      );
-
-      if (aiResponse) {
-        const newConversations = [
-          ...updatedConversations,
-          { type: "ai", content: aiResponse },
-        ];
-        setConversations(newConversations);
-
-        // Store the conversation history in Upstash Vector
-        await storeChatHistory(
-          newConversations.map((msg) => ({
-            role: msg.type === "user" ? "user" : "assistant",
-            content: msg.content,
-            botType: msg.type === "user" ? null : bots[currentBot].name,
-            pipeName: msg.type === "user" ? null : bots[currentBot].pipeName,
-          }))
-        );
-      }
-    } catch (error) {
-      console.error("Error getting AI response", error);
-    }
-    setMessage(newTranscript);
-  };
-
-  const handleAudioSubmit = async (newVoice) => {
-    try {
-      AiVoice(newVoice);
-    } catch (error) {
-      console.log("error trying to get audio");
-    }
-  };
-
   return (
     <MainLayout>
+<<<<<<< Updated upstream
       <div className="flex flex-col h-[calc(100vh-8rem)]">
         {/* Bot Selector Header */}
         <div className="flex justify-between items-center mb-4">
@@ -252,6 +152,8 @@ const bots = {
 const ChatScreen = () => {
   return (
     <MainLayout>
+=======
+>>>>>>> Stashed changes
       <BaseChatScreen
         initialBot="conversational"
         allowBotSwitch={true}
