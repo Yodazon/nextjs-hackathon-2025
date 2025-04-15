@@ -9,6 +9,7 @@ import AiVoice from "./aiAudio";
 import { useSession } from "next-auth/react";
 import { useRAGChat } from "@/lib/useRAGChat";
 import { getConversationHistory, getRelevantContext } from "@/lib/embeddings";
+import { generateChatId } from "@/lib/generateChatID";
 
 const BaseChatScreen = ({
   initialBot,
@@ -19,7 +20,7 @@ const BaseChatScreen = ({
 
   className = "h-[calc(100vh-8rem)]",
 }) => {
-  console.log("system Variable", systemVariable);
+  const [currentChatId, setCurrentChatId] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [currentBot, setCurrentBot] = useState(initialBot);
   const [showBotSelector, setShowBotSelector] = useState(false);
@@ -50,10 +51,27 @@ const BaseChatScreen = ({
     loadHistory();
   }, [session?.user?.id]);
 
+  // Initialize chat ID when component mounts
+  useEffect(() => {
+    if (session?.user?.id && !currentChatId) {
+      setCurrentChatId(generateChatId());
+    }
+  }, [session?.user?.id]);
+
+  //set new chat ID when a new bot is chosen
+  useEffect(() => {
+    setCurrentChatId(generateChatId());
+  }, [currentBot]);
+
   const handleTranscriptChange = async (newTranscript) => {
     if (!session?.user) {
       alert("Please sign in to continue");
       return;
+    }
+
+    //make a new chat ID if none exists
+    if (!currentChatId) {
+      setCurrentChatId(generateChatId());
     }
 
     const updatedConversations = [
@@ -92,6 +110,7 @@ const BaseChatScreen = ({
             content: msg.content,
             botType: msg.type === "user" ? null : bots[currentBot].name,
             pipeName: msg.type === "user" ? null : bots[currentBot].pipeName,
+            chatId: currentChatId,
           }))
         );
       }

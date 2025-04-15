@@ -142,7 +142,7 @@ export async function storeConversation(userId, messages) {
             botType: message.botType ? String(message.botType) : null,
             pipeName: message.pipeName ? String(message.pipeName) : null,
             userId: userId,
-            //UPDATE ME need to make and add a "chatID"
+            chatId: message.child || null,
           },
         });
 
