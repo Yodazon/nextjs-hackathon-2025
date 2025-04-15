@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import SignOutButton from "@/components/SignOutButton";
+import MainLayout from "@/components/layout/MainLayout";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -13,56 +14,66 @@ export default function Home() {
     completedLessons: 3,
     totalLessons: 10,
     currentStreak: 5,
-    totalPoints: 120
+    totalPoints: 120,
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-800">AI Learning Platform</h1>
-          <SignOutButton />
+      {status === "loading" ? (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
         </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {status === "loading" ? (
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-          </div>
-        ) : !session ? (
-          <div className="text-center py-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Welcome to AI Learning Platform</h2>
-            <p className="text-gray-600 mb-8">Please sign in to access your learning dashboard</p>
-            <Link 
-              href="/auth/signin" 
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Sign In
-            </Link>
-          </div>
-        ) : (
+      ) : !session ? (
+        <div className="text-center py-12">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            Welcome to AI Learning Platform
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Please sign in to access your learning dashboard
+          </p>
+          <Link
+            href="/auth/signin"
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Sign In
+          </Link>
+        </div>
+      ) : (
+        <MainLayout>
           <div className="space-y-8">
             {/* Progress Overview */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Your Progress</h2>
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Your Progress
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-600">Completed Lessons</p>
-                  <p className="text-2xl font-bold text-blue-600">{progressData.completedLessons}/{progressData.totalLessons}</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {progressData.completedLessons}/{progressData.totalLessons}
+                  </p>
                 </div>
                 <div className="bg-green-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-600">Current Streak</p>
-                  <p className="text-2xl font-bold text-green-600">{progressData.currentStreak} days</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {progressData.currentStreak} days
+                  </p>
                 </div>
                 <div className="bg-purple-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-600">Total Points</p>
-                  <p className="text-2xl font-bold text-purple-600">{progressData.totalPoints}</p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {progressData.totalPoints}
+                  </p>
                 </div>
                 <div className="bg-yellow-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-600">Progress</p>
                   <p className="text-2xl font-bold text-yellow-600">
-                    {Math.round((progressData.completedLessons / progressData.totalLessons) * 100)}%
+                    {Math.round(
+                      (progressData.completedLessons /
+                        progressData.totalLessons) *
+                        100
+                    )}
+                    %
                   </p>
                 </div>
               </div>
@@ -74,11 +85,20 @@ export default function Home() {
                 <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-4">
                     <div className="bg-blue-100 p-3 rounded-lg">
-                      <Image src="/book.svg" alt="Lessons" width={24} height={24} />
+                      <Image
+                        src="/book.svg"
+                        alt="Lessons"
+                        width={24}
+                        height={24}
+                      />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-blue-600">Lessons</h3>
-                      <p className="text-sm text-gray-600">Continue your learning journey</p>
+                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-blue-600">
+                        Lessons
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Continue your learning journey
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -88,11 +108,20 @@ export default function Home() {
                 <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-4">
                     <div className="bg-green-100 p-3 rounded-lg">
-                      <Image src="/chart.svg" alt="Stats" width={24} height={24} />
+                      <Image
+                        src="/chart.svg"
+                        alt="Stats"
+                        width={24}
+                        height={24}
+                      />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-green-600">Stats</h3>
-                      <p className="text-sm text-gray-600">View your learning analytics</p>
+                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-green-600">
+                        Stats
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        View your learning analytics
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -102,11 +131,20 @@ export default function Home() {
                 <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-4">
                     <div className="bg-indigo-100 p-3 rounded-lg">
-                      <Image src="/chat.svg" alt="AI Chat" width={24} height={24} />
+                      <Image
+                        src="/chat.svg"
+                        alt="AI Chat"
+                        width={24}
+                        height={24}
+                      />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-indigo-600">AI Chat</h3>
-                      <p className="text-sm text-gray-600">Chat with your AI learning assistant</p>
+                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-indigo-600">
+                        AI Chat
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Chat with your AI learning assistant
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -116,19 +154,28 @@ export default function Home() {
                 <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-4">
                     <div className="bg-purple-100 p-3 rounded-lg">
-                      <Image src="/settings.svg" alt="Settings" width={24} height={24} />
+                      <Image
+                        src="/settings.svg"
+                        alt="Settings"
+                        width={24}
+                        height={24}
+                      />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-purple-600">Settings</h3>
-                      <p className="text-sm text-gray-600">Manage your preferences</p>
+                      <h3 className="text-lg font-semibold text-gray-800 group-hover:text-purple-600">
+                        Settings
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Manage your preferences
+                      </p>
                     </div>
                   </div>
                 </div>
               </Link>
             </div>
           </div>
-        )}
-      </main>
+        </MainLayout>
+      )}
     </div>
   );
 }

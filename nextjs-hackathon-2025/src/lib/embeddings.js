@@ -141,6 +141,8 @@ export async function storeConversation(userId, messages) {
             totalChunks: String(chunks.length),
             botType: message.botType ? String(message.botType) : null,
             pipeName: message.pipeName ? String(message.pipeName) : null,
+            userId: userId,
+            //UPDATE ME
           },
         });
 
