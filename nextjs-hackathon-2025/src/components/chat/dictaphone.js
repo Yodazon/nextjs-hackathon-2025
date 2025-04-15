@@ -46,11 +46,11 @@ const Dictaphone = ({ onTranscriptChange }) => {
   // }
 
   return (
-    <div className="bg-blue-200 p-4 rounded-lg  grid grid-cols-[auto_1fr_auto]">
+    <div className="bg-white p-4 rounded-lg  grid grid-cols-[auto_1fr_auto]">
       <div>
         <button
           onClick={listening ? SpeechRecognition.stopListening : startListening}
-          className="bg-gray-400 p-2 rounded-xl block w-8"
+          className="bg-primary-main text-white p-2  rounded-xl block w-8"
         >
           <RiVoiceprintFill />
         </button>
@@ -71,11 +71,13 @@ const Dictaphone = ({ onTranscriptChange }) => {
       {transcript ? (
         <p className="mt-2 px-10">{transcript}</p>
       ) : (
-        <p className="mt-2 px-10">Recorded text would appear here</p>
+        <p className="mt-2 px-10">
+          Press the speech button to converse with the AI
+        </p>
       )}
 
       <button
-        className="bg-gray-400 p-2 rounded-xl block w-15"
+        className="bg-primary-main px-3 text-white rounded-lg block"
         onClick={handleSend}
       >
         Send

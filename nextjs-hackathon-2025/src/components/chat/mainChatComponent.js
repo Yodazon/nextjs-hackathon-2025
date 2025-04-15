@@ -114,7 +114,7 @@ const BaseChatScreen = ({
         </h2>
         {allowBotSwitch && (
           <button
-            className="p-2 bg-gray-100 rounded-lg flex items-center gap-2 hover:bg-gray-200 transition-colors"
+            className="p-2 bg-primary-main text-white rounded-lg flex items-center gap-2 hover:bg-gray-200 transition-colors"
             onClick={() => setShowBotSelector(true)}
           >
             <RiRobot2Line /> Switch Bot
@@ -134,7 +134,7 @@ const BaseChatScreen = ({
             <div
               className={`max-w-[80%] p-3 rounded-lg ${
                 msg.type === "user"
-                  ? "bg-blue-500 text-white rounded-br-none"
+                  ? "bg-primary-main text-white rounded-br-none"
                   : "bg-gray-100 text-gray-800 rounded-bl-none"
               }`}
             >

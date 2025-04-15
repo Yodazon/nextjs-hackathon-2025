@@ -89,14 +89,16 @@ const MainLayout = ({ children }) => {
         >
           <div className="h-full w-64 bg-white shadow-lg">
             <nav className="h-full flex flex-col">
-              <div className="flex-1 px-3 py-4 space-y-1">
+              <div className="flex-1 px-3 py-6 mt-5 space-y-2">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
+                    className="flex items-center px-4 py-3 text-foreground hover:bg-primary-light hover:text-primary-dark rounded-md transition-colors"
                   >
-                    <span className="mr-3">{item.icon}</span>
+                    <span className="mr-3 text-primary-main text-xl">
+                      {item.icon}
+                    </span>
                     {item.label}
                   </Link>
                 ))}
@@ -105,7 +107,7 @@ const MainLayout = ({ children }) => {
                 <div className="px-3 py-4 border-t border-gray-200">
                   <Link
                     href="/api/auth/signout"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-md transition-colors"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-primary-light hover:text-primary-dark rounded-md transition-colors"
                   >
                     <span className="mr-3">
                       <RiLogoutBoxLine />
