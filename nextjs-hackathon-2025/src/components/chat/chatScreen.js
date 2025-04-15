@@ -1,7 +1,5 @@
 "use client";
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 import React, { useState, useEffect } from "react";
 import { RiVoiceprintFill, RiRobot2Line } from "react-icons/ri";
 import Dictaphone from "./dictaphone";
@@ -10,8 +8,7 @@ import AiVoice from "./aiAudio";
 import { useSession } from "next-auth/react";
 import { useRAGChat } from "@/lib/useRAGChat";
 import { getConversationHistory, getRelevantContext } from "@/lib/embeddings";
-=======
->>>>>>> Stashed changes
+
 import MainLayout from "../layout/MainLayout";
 import BaseChatScreen from "./mainChatComponent";
 
@@ -35,7 +32,6 @@ const bots = {
 const ChatScreen = () => {
   return (
     <MainLayout>
-<<<<<<< Updated upstream
       <div className="flex flex-col h-[calc(100vh-8rem)]">
         {/* Bot Selector Header */}
         <div className="flex justify-between items-center mb-4">
@@ -122,48 +118,16 @@ const ChatScreen = () => {
           </div>
         </div>
       </div>
-<<<<<<< HEAD
       <div id="chat-box" className="w-2/3 mx-auto ">
         <Dictaphone onTranscriptChange={handleTranscriptChange} />
       </div>
       <BotSelector />
-    </div>
-=======
-import MainLayout from "../layout/MainLayout";
-import BaseChatScreen from "./mainChatComponent";
-
-const bots = {
-  conversational: {
-    name: "Chat Bot",
-    pipeName: "base-conversational",
-    icon: "💬",
-    voice: "ThT5KcBeYPX3keUQqHPh",
-    id: "conversational",
-  },
-  quiz: {
-    name: "Quiz Master",
-    pipeName: "tester-ai",
-    icon: "❓",
-    voice: "ThT5KcBeYPX3keUQqHPh",
-    id: "quiz",
-  },
-};
-
-const ChatScreen = () => {
-  return (
-    <MainLayout>
-=======
->>>>>>> Stashed changes
       <BaseChatScreen
         initialBot="conversational"
         allowBotSwitch={true}
         bots={bots}
       />
     </MainLayout>
->>>>>>> Stashed changes
-=======
-    </MainLayout>
->>>>>>> a85a9f172c32dfc215f1ce9d79a78f2883464933
   );
 };
 
