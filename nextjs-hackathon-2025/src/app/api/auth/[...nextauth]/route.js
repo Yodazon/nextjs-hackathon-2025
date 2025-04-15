@@ -12,7 +12,7 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       // For Google OAuth, ensure we have the user's email
-      if (account?.provider === 'google') {
+      if (account?.provider === "google") {
         if (!user.email) {
           return false;
         }
@@ -21,8 +21,9 @@ const handler = NextAuth({
           id: user.id,
           email: user.email,
           name: user.name,
+          tier: "free",
           image: user.image,
-          provider: 'google'
+          provider: "google",
         };
         await redis.set(`user:${user.email}`, userData);
       }
@@ -32,7 +33,7 @@ const handler = NextAuth({
       if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.provider = account?.provider || 'credentials';
+        token.provider = account?.provider || "credentials";
       }
       return token;
     },
@@ -43,7 +44,7 @@ const handler = NextAuth({
         session.user.provider = token.provider;
       }
       return session;
-    }
+    },
   },
   debug: process.env.NODE_ENV === "development",
   session: {
@@ -54,15 +55,15 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   events: {
     async signIn({ user, account }) {
-      console.log('User signed in:', { user, account });
+      console.log("User signed in:", { user, account });
     },
     async signOut({ token }) {
-      console.log('User signed out:', token);
+      console.log("User signed out:", token);
     },
     async error({ error }) {
-      console.error('Auth error:', error);
-    }
-  }
+      console.error("Auth error:", error);
+    },
+  },
 });
 
 export { handler as GET, handler as POST };
