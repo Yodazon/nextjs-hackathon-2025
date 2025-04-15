@@ -13,8 +13,7 @@ const lessonBots = {
 };
 
 export default async function LessonAI({ params }) {
-  const { lessonName } = await params;
-
+  const { lessonName, lessonLevel } = await params;
   if (!lessonName) {
     return (
       <MainLayout>
@@ -31,10 +30,13 @@ export default async function LessonAI({ params }) {
         initialBot="lesson"
         allowBotSwitch={false}
         bots={lessonBots}
-        systemContext={[
+        systemVariable={[
           {
             role: "system",
-            variable: `${lessonName}`,
+            variable: {
+              subject: `${lessonName}`,
+              difficulty: `${lessonLevel}`,
+            },
           },
         ]}
         className="h-[calc(100vh-16rem)]"
@@ -43,6 +45,7 @@ export default async function LessonAI({ params }) {
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold mb-6">
             Lesson: {decodeURIComponent(lessonName)}
+            Level: {decodeURIComponent(lessonLevel)}
           </h1>
           <div className="bg-white rounded-lg shadow-md p-6">
             <div>This is where the lesson content will go!</div>

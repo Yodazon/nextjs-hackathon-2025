@@ -15,8 +15,11 @@ const BaseChatScreen = ({
   allowBotSwitch = true,
   bots,
   systemContext = [],
+  systemVariable = [],
+
   className = "h-[calc(100vh-8rem)]",
 }) => {
+  console.log("system Variable", systemVariable);
   const [conversations, setConversations] = useState([]);
   const [currentBot, setCurrentBot] = useState(initialBot);
   const [showBotSelector, setShowBotSelector] = useState(false);
@@ -73,6 +76,7 @@ const BaseChatScreen = ({
           })),
         ],
         bots[currentBot].pipeName,
+        systemVariable
       );
 
       if (aiResponse) {
@@ -88,7 +92,7 @@ const BaseChatScreen = ({
             content: msg.content,
             botType: msg.type === "user" ? null : bots[currentBot].name,
             pipeName: msg.type === "user" ? null : bots[currentBot].pipeName,
-          })),
+          }))
         );
       }
     } catch (error) {

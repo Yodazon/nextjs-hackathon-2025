@@ -1,6 +1,6 @@
 //need to add variables  to be passed to Lnagbase for AI lesson planning
 import Link from "next/link";
-import LessonAI from "@/app/lessons/aiLesson/[lessonName]/page";
+import LessonAI from "@/app/lessons/aiLesson/[lessonName]/[lessonLevel]/page";
 const LessonCircle = ({ lessonTitle, lessonNumber, Icon, lessonLevel }) => {
   // Color mapping based on lesson level
   const getLevelColors = (level) => {
@@ -32,7 +32,7 @@ const LessonCircle = ({ lessonTitle, lessonNumber, Icon, lessonLevel }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <Link href={`/lessons/aiLesson/${encodeURIComponent(lessonTitle)}`}>
+      <Link href={`/lessons/aiLesson/${lessonTitle}/${lessonLevel}`}>
         <div
           className={`
         w-24 h-24 md:w-32 md:h-32 

@@ -1,14 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { RiVoiceprintFill, RiRobot2Line } from "react-icons/ri";
-import Dictaphone from "./dictaphone";
-import AiChat from "./aiConversation";
-import AiVoice from "./aiAudio";
-import { useSession } from "next-auth/react";
-import { useRAGChat } from "@/lib/useRAGChat";
-import { getConversationHistory, getRelevantContext } from "@/lib/embeddings";
-
+import React from "react";
 import MainLayout from "../layout/MainLayout";
 import BaseChatScreen from "./mainChatComponent";
 

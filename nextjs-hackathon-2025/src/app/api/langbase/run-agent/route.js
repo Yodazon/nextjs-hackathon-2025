@@ -9,11 +9,27 @@ export async function POST(req) {
   try {
     //Get request body from the client
     const body = await req.json();
-    const variables = body.variables;
     const messages = body.messages;
     const shouldStream = body.stream;
     const pipeName = body.pipeName || "base-conversational";
-    console.log(body);
+
+    // Transform variables into two separate name-value pairs
+    const rawVariables = body.variables;
+    const variables = rawVariables?.[0]?.variable
+      ? [
+          {
+            name: "subject",
+            value: rawVariables[0].variable.subject || "",
+          },
+          {
+            name: "difficulty",
+            value: rawVariables[0].variable.difficulty || "1",
+          },
+        ]
+      : [];
+
+    console.log("this is a variables taken out");
+    console.log(variables);
 
     if (
       !process.env.LANGBASE_API_KEY ||
@@ -33,7 +49,7 @@ export async function POST(req) {
         ? CONVERSATION_PIPE_API_KEY
         : pipeName === "tester-ai"
           ? TESTER_PIPE_API_KEY
-          : pipeName === "lessons-teacher"
+          : pipeName === "lesson-teacher"
             ? LANGBASE_LESSONS_AI_API_KEY
             : CONVERSATION_PIPE_API_KEY; // default fallback
 
@@ -56,8 +72,8 @@ export async function POST(req) {
 
     const { completion } = await langbase.pipes.run({
       stream: false,
-      messages,
-      variables,
+      messages: messages,
+      variables: variables,
       name: pipeName,
       apiKey: API_KEY,
     });

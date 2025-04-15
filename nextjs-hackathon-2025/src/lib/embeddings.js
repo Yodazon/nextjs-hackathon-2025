@@ -128,7 +128,7 @@ export async function storeConversation(userId, messages) {
 
         const embedding = await createEmbedding(chunk);
 
-        // Store in user-specific namespace without userId in metadata
+        // Store in user-specific namespace with userId in metadata
         await userIndex.upsert({
           id: messageId,
           vector: embedding,
@@ -142,7 +142,7 @@ export async function storeConversation(userId, messages) {
             botType: message.botType ? String(message.botType) : null,
             pipeName: message.pipeName ? String(message.pipeName) : null,
             userId: userId,
-            //UPDATE ME
+            //UPDATE ME need to make and add a "chatID"
           },
         });
 
@@ -175,23 +175,22 @@ export async function getConversationHistory(userId, limit = 50) {
     });
     console.log("below are the results of the first load");
     console.log(results);
-    return results;
-    // .filter((result) => result && result.metadata)
-    // .map((result) => {
-    //   const metadata = result.metadata;
-    //   return {
-    //     id: String(result.id || ""),
-    //     role: String(metadata.role || "user"),
-    //     content: String(metadata.originalMessage || ""),
-    //     timestamp: parseInt(metadata.timestamp, 10),
-    //     score: Number(result.score || 0),
-    // botType: metadata.botType || null,
-    // pipeName: metadata.pipeName || null,
-
-    //   };
-    // })
-    // .filter((msg) => msg.content)
-    // .sort((a, b) => b.timestamp - a.timestamp);
+    return results
+      .filter((result) => result && result.metadata)
+      .map((result) => {
+        const metadata = result.metadata;
+        return {
+          id: String(result.id || ""),
+          role: String(metadata.role || "user"),
+          content: String(metadata.originalMessage || ""),
+          timestamp: parseInt(metadata.timestamp, 10),
+          score: Number(result.score || 0),
+          botType: metadata.botType || null,
+          pipeName: metadata.pipeName || null,
+        };
+      })
+      .filter((msg) => msg.content)
+      .sort((a, b) => b.timestamp - a.timestamp);
   } catch (error) {
     console.error("Error in getConversationHistory:", error);
     throw error;

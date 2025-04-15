@@ -1,7 +1,8 @@
-const AiChat = async (message, messageHistory, pipeName) => {
+const AiChat = async (message, messageHistory, pipeName, messageVariables) => {
   console.log("Current message:", message);
   console.log("Message history:", messageHistory);
   console.log("Using Pipe: ", pipeName);
+  console.log("Variables being passed", messageVariables);
 
   try {
     const response = await fetch("/api/langbase/run-agent", {
@@ -14,6 +15,7 @@ const AiChat = async (message, messageHistory, pipeName) => {
         messages: messageHistory,
         pipeName: pipeName,
         // variables: [{ name: "user", value: message }],
+        variables: messageVariables,
       }),
     });
 
