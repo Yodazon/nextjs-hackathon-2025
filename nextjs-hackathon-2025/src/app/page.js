@@ -86,10 +86,10 @@ export default function Home() {
                   <div className="flex items-center gap-4">
                     <div className="bg-blue-100 p-3 rounded-lg">
                       <Image
-                        src="/book.svg"
+                        src="/images/school.svg"
                         alt="Lessons"
-                        width={24}
-                        height={24}
+                        width={30}
+                        height={30}
                       />
                     </div>
                     <div>
@@ -109,10 +109,10 @@ export default function Home() {
                   <div className="flex items-center gap-4">
                     <div className="bg-green-100 p-3 rounded-lg">
                       <Image
-                        src="/chart.svg"
+                        src="/images/chart.svg"
                         alt="Stats"
-                        width={24}
-                        height={24}
+                        width={30}
+                        height={30}
                       />
                     </div>
                     <div>
@@ -132,10 +132,10 @@ export default function Home() {
                   <div className="flex items-center gap-4">
                     <div className="bg-indigo-100 p-3 rounded-lg">
                       <Image
-                        src="/chat.svg"
+                        src="/images/bot.svg"
                         alt="AI Chat"
-                        width={24}
-                        height={24}
+                        width={30}
+                        height={30}
                       />
                     </div>
                     <div>
@@ -155,10 +155,10 @@ export default function Home() {
                   <div className="flex items-center gap-4">
                     <div className="bg-purple-100 p-3 rounded-lg">
                       <Image
-                        src="/settings.svg"
+                        src="/images/settings.svg"
                         alt="Settings"
-                        width={24}
-                        height={24}
+                        width={30}
+                        height={30}
                       />
                     </div>
                     <div>
