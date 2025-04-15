@@ -36,7 +36,7 @@ const MainLayout = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="bg-black text-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -50,22 +50,27 @@ const MainLayout = ({ children }) => {
                   <RiMenuLine size={24} />
                 )}
               </button>
-              <Link href="/" className="ml-4 text-xl font-bold text-blue-600">
-                AI Assistant
+              <Link
+                href="/"
+                className="ml-4 text-xl font-bold text-primary-main"
+              >
+                <img src={"/images/logo.png"} width={"170"} height={"75"} />
               </Link>
             </div>
             <div className="flex items-center">
               {session ? (
                 <div className="flex items-center space-x-4">
-                  <span className="text-gray-700">{session.user.name}</span>
-                  <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <RiUserLine className="text-blue-600" />
+                  <span className="text-white text-bold">
+                    {session.user.name}
+                  </span>
+                  <div className="h-8 w-8 rounded-full bg-primary-main flex items-center justify-center">
+                    <RiUserLine className="text-white" />
                   </div>
                 </div>
               ) : (
                 <Link
                   href="/api/auth/signin"
-                  className="text-blue-600 hover:text-blue-700"
+                  className="text-primary-main hover:text-blue-700"
                 >
                   Sign In
                 </Link>
