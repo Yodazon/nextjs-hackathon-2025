@@ -65,15 +65,19 @@ export async function POST(req) {
         return new Response(stream, {
           headers: { "Content-Type": "text/event-stream" },
         });
-      } catch (streamError) {
-        return Response.json({ error: streamError.message }, { status: 500 });
+      } catch (error) {
+        console.error("Stream Error:", error);
+        return Response.json(
+          { error: error.message || "Stream error occurred" },
+          { status: 500 }
+        );
       }
     }
 
     const { completion } = await langbase.pipes.run({
       stream: false,
-      messages: messages,
-      variables: variables,
+      messages,
+      variables,
       name: pipeName,
       apiKey: API_KEY,
     });
@@ -81,6 +85,9 @@ export async function POST(req) {
     return Response.json({ message: completion });
   } catch (error) {
     console.error("API Error:", error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json(
+      { error: error.message || "An unexpected error occurred" },
+      { status: 500 }
+    );
   }
 }
