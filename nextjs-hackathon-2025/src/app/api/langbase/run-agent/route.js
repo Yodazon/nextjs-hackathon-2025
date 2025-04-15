@@ -3,6 +3,7 @@ import { Langbase } from "langbase";
 const CONVERSATION_PIPE_API_KEY =
   process.env.LANGBASE_CONVERSATION_PIPE_API_KEY;
 const TESTER_PIPE_API_KEY = process.env.LANGBASE_TESTER_AI_API_KEY;
+const LANGBASE_LESSONS_AI_API_KEY = process.env.LANGBASE_LESSONS_AI_API_KEY;
 
 export async function POST(req) {
   try {
@@ -12,11 +13,13 @@ export async function POST(req) {
     const messages = body.messages;
     const shouldStream = body.stream;
     const pipeName = body.pipeName || "base-conversational";
+    console.log(body);
 
     if (
       !process.env.LANGBASE_API_KEY ||
       !CONVERSATION_PIPE_API_KEY ||
-      !TESTER_PIPE_API_KEY
+      !TESTER_PIPE_API_KEY ||
+      !LANGBASE_LESSONS_AI_API_KEY
     ) {
       return Response.json({ error: "Missing API keys" }, { status: 500 });
     }
@@ -28,7 +31,11 @@ export async function POST(req) {
     const API_KEY =
       pipeName === "base-conversational"
         ? CONVERSATION_PIPE_API_KEY
-        : TESTER_PIPE_API_KEY;
+        : pipeName === "tester-ai"
+          ? TESTER_PIPE_API_KEY
+          : pipeName === "lessons-teacher"
+            ? LANGBASE_LESSONS_AI_API_KEY
+            : CONVERSATION_PIPE_API_KEY; // default fallback
 
     if (shouldStream) {
       try {

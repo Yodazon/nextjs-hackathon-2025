@@ -1,11 +1,6 @@
-//April 8, 2025
-
-// The following code is used by the user for speech to text
-// Uses WebSpeech API, not compatible with Mozilla
-// Therefore more work is needed to be able to one
-// This is handling the chat underneath with users and the chat with the screen
 "use client";
 
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from "react";
 import { RiVoiceprintFill, RiRobot2Line } from "react-icons/ri";
 import Dictaphone from "./dictaphone";
@@ -228,6 +223,37 @@ const ChatScreen = () => {
       </div>
       <BotSelector />
     </div>
+=======
+import MainLayout from "../layout/MainLayout";
+import BaseChatScreen from "./mainChatComponent";
+
+const bots = {
+  conversational: {
+    name: "Chat Bot",
+    pipeName: "base-conversational",
+    icon: "💬",
+    voice: "ThT5KcBeYPX3keUQqHPh",
+    id: "conversational",
+  },
+  quiz: {
+    name: "Quiz Master",
+    pipeName: "tester-ai",
+    icon: "❓",
+    voice: "ThT5KcBeYPX3keUQqHPh",
+    id: "quiz",
+  },
+};
+
+const ChatScreen = () => {
+  return (
+    <MainLayout>
+      <BaseChatScreen
+        initialBot="conversational"
+        allowBotSwitch={true}
+        bots={bots}
+      />
+    </MainLayout>
+>>>>>>> Stashed changes
   );
 };
 
