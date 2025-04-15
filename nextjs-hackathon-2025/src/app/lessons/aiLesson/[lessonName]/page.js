@@ -1,4 +1,5 @@
 import MainLayout from "@/components/layout/MainLayout";
+<<<<<<< HEAD
 import BaseChatScreen from "@/components/chat/mainChatComponent";
 
 const lessonBots = {
@@ -10,6 +11,8 @@ const lessonBots = {
     id: "lesson",
   },
 };
+=======
+>>>>>>> a85a9f172c32dfc215f1ce9d79a78f2883464933
 
 export default async function LessonAI({ params }) {
   const { lessonName } = await params;
@@ -26,6 +29,7 @@ export default async function LessonAI({ params }) {
 
   return (
     <MainLayout>
+<<<<<<< HEAD
       <BaseChatScreen
         initialBot="lesson"
         allowBotSwitch={false}
@@ -39,6 +43,9 @@ export default async function LessonAI({ params }) {
         className="h-[calc(100vh-16rem)]"
       />
       {/* <div className="container mx-auto px-4 py-8">
+=======
+      <div className="container mx-auto px-4 py-8">
+>>>>>>> a85a9f172c32dfc215f1ce9d79a78f2883464933
         <h1 className="text-3xl font-bold mb-6">
           Lesson: {decodeURIComponent(lessonName)}
         </h1>
@@ -48,7 +55,11 @@ export default async function LessonAI({ params }) {
             Currently studying: {decodeURIComponent(lessonName)}
           </div>
         </div>
+<<<<<<< HEAD
       </div> */}
+=======
+      </div>
+>>>>>>> a85a9f172c32dfc215f1ce9d79a78f2883464933
     </MainLayout>
   );
 }
