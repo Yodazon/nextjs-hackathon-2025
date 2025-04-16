@@ -52,6 +52,7 @@ export function useAiChat() {
     botConfig,
     systemContext = [],
     systemVariable = [],
+    shouldPlayAudio,
   ) => {
     if (!session?.user) {
       throw new Error("Please sign in to continue");
@@ -87,6 +88,7 @@ export function useAiChat() {
       );
 
       if (aiResponse) {
+        if (shouldPlayAudio) playAudio(aiResponse);
         const newConversations = [
           ...updatedConversations,
           { type: "ai", content: aiResponse },
@@ -129,7 +131,6 @@ export function useAiChat() {
     conversations,
     isLoading,
     sendMessage,
-    playAudio,
     resetChat,
     currentChatId,
   };

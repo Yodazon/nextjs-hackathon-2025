@@ -21,10 +21,10 @@ const BaseChatScreen = ({
 }) => {
   const [currentBot, setCurrentBot] = useState(initialBot);
   const [showBotSelector, setShowBotSelector] = useState(false);
-  const [aiAutoSpeak, setAiAutoSpeak] = useState(false);
+  const [shouldPlayAudio, setShouldPlayAudio] = useState(false);
 
   const { data: session } = useSession();
-  const { conversations, sendMessage, playAudio } = useAiChat();
+  const { conversations, sendMessage } = useAiChat();
 
   const handleBotChange = (bot) => {
     setCurrentBot(bot);
@@ -41,7 +41,7 @@ const BaseChatScreen = ({
         bots[currentBot],
         systemContext,
         systemVariable,
-        aiAutoSpeak,
+        shouldPlayAudio,
       );
     } catch (error) {
       console.error("Error in transcript handling:", error);
@@ -55,8 +55,8 @@ const BaseChatScreen = ({
         <div className="flex items-center space-x-4">
           <BotDisplay currentBot={bots[currentBot]} />
           <ToggleSwitch
-            initialState={aiAutoSpeak}
-            onChange={setAiAutoSpeak}
+            initialState={shouldPlayAudio}
+            onChange={setShouldPlayAudio}
             label="Auto-speak"
           />
         </div>
