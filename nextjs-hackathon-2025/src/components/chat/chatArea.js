@@ -1,6 +1,6 @@
 export function ChatArea({ children }) {
   return (
-    <div className="flex-1 overflow-y-auto bg-white rounded-lg shadow-sm p-4 mb-4">
+    <div className="flex-1 overflow-y-auto bg-white rounded-lg shadow-md p-4 mb-4">
       {children}
     </div>
   );

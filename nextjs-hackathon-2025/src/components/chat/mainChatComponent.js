@@ -17,7 +17,7 @@ const BaseChatScreen = ({
   bots,
   systemContext = [],
   systemVariable = [],
-  className = "h-[calc(100vh-8rem)]",
+  className = "h-[calc(100vh-12rem)]",
 }) => {
   const [currentBot, setCurrentBot] = useState(initialBot);
   const [showBotSelector, setShowBotSelector] = useState(false);
@@ -41,7 +41,7 @@ const BaseChatScreen = ({
         bots[currentBot],
         systemContext,
         systemVariable,
-        shouldPlayAudio,
+        shouldPlayAudio
       );
     } catch (error) {
       console.error("Error in transcript handling:", error);

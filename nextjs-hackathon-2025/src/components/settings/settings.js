@@ -11,7 +11,7 @@ const SettingsPage = () => {
     <MainLayout>
       <div className="max-w-4xl mx-auto p-6">
         <h1 className="text-2xl font-bold mb-6">Settings</h1>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-2">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-lg font-medium">Appearance</h2>
@@ -26,7 +26,7 @@ const SettingsPage = () => {
             />
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-2">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-lg font-medium">Default language</h2>
