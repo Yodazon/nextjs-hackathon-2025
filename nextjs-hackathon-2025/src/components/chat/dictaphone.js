@@ -12,7 +12,7 @@ import SpeechRecognition, {
 
 const Dictaphone = ({ onTranscriptChange }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("en-CA");
-
+  const [buttonColour, setButtonColour] = useState(null);
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
   const startListening = () => {
@@ -25,11 +25,13 @@ const Dictaphone = ({ onTranscriptChange }) => {
   useEffect(() => {
     console.log(transcript);
     if (transcript && !listening) {
+      setButtonColour("bg-primary-main text-white");
       onTranscriptChange(transcript);
       resetTranscript();
     }
   }, [listening]);
   const handleSend = () => {
+    setButtonColour("bg-white text-primary-main");
     startListening();
   };
 
@@ -39,10 +41,6 @@ const Dictaphone = ({ onTranscriptChange }) => {
     { code: "fr-FR", name: "French" },
     { code: "pl", name: "Polish" },
   ];
-
-  // if (!browserSupportsSpeechRecognition) {
-  //   alert("Browser does not support speech recongition");
-  // }
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4">
@@ -70,7 +68,7 @@ const Dictaphone = ({ onTranscriptChange }) => {
         )}
 
         <button
-          className="bg-primary-main px-5 text-white rounded-lg block hover:cursor-pointer"
+          className={` ${buttonColour} px-5  rounded-lg border-2 border-primary-main  block hover:cursor-pointer hover:text-primary-main hover:bg-white `}
           onClick={handleSend}
         >
           <RiVoiceprintFill className="text-lg" />
