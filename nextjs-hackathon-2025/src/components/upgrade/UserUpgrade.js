@@ -144,7 +144,14 @@ const pricingPlans = [
 ];
 
 const UserUpgrade = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      // Handle unauthenticated state
+      setCurrentTier(TIERS.FREE);
+      setIsLoading(false);
+    },
+  });
   const [currentTier, setCurrentTier] = useState(TIERS.FREE);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -173,15 +180,44 @@ const UserUpgrade = () => {
   }, []);
 
   const loadTier = async () => {
+    console.log('Auth status:', status);
+    console.log('Session:', session);
+    
+    if (status !== 'authenticated' || !session?.user?.id) {
+      console.log('Not authenticated or missing user ID');
+      setCurrentTier(TIERS.FREE);
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/user/tier');
+      console.log('Making request to /api/user/tier');
+      const response = await fetch('/api/user/tier', {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.accessToken}`,
+        },
+      });
+      
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
+        if (response.status === 401) {
+          console.log('Received 401 Unauthorized');
+          setCurrentTier(TIERS.FREE);
+          setIsLoading(false);
+          return;
+        }
         throw new Error('Failed to fetch user tier');
       }
+      
       const data = await response.json();
+      console.log('Received tier data:', data);
       setCurrentTier(data.tier);
     } catch (error) {
       console.error('Error loading user tier:', error);
+      setError(error.message);
       setCurrentTier(TIERS.FREE);
     } finally {
       setIsLoading(false);
@@ -189,8 +225,12 @@ const UserUpgrade = () => {
   };
 
   useEffect(() => {
-    loadTier();
-  }, []);
+    if (status === 'loading') {
+      setIsLoading(true);
+    } else {
+      loadTier();
+    }
+  }, [status, session?.user?.id]); // Re-run when auth status or user ID changes
 
   const handleUpgrade = async (productId) => {
     try {

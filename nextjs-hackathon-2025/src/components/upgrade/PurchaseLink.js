@@ -30,9 +30,16 @@ const PurchaseLink = ({
     };
   }, []);
 
+  // Ensure href is a valid Polar checkout URL
+  const getValidUrl = (productId) => {
+    if (!productId) return '#';
+    if (productId.startsWith('http')) return productId;
+    return `https://polar.sh/checkout/${productId}`;
+  };
+
   return (
     <a
-      href={href}
+      href={getValidUrl(href)}
       data-polar-checkout
       data-polar-checkout-theme={theme}
       className={className}

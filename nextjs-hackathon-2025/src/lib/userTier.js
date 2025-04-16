@@ -8,8 +8,14 @@ export const TIERS = {
 
 export async function getUserTier(userId) {
   try {
-    const tier = await redis.get(`user:${userId}:tier`);
-    return tier || TIERS.FREE;
+    const userData = await redis.get(`user:${userId}`);
+    if (!userData) {
+      console.error('User not found:', userId);
+      return TIERS.FREE;
+    }
+
+    // The tier is stored directly in the user metadata
+    return userData.tier || TIERS.FREE;
   } catch (error) {
     console.error('Error getting user tier:', error);
     return TIERS.FREE;
@@ -18,7 +24,19 @@ export async function getUserTier(userId) {
 
 export async function setUserTier(userId, tier) {
   try {
-    await redis.set(`user:${userId}:tier`, tier);
+    const userData = await redis.get(`user:${userId}`);
+    if (!userData) {
+      console.error('User not found:', userId);
+      return;
+    }
+
+    // Update the tier in the user metadata
+    const updatedUserData = {
+      ...userData,
+      tier: tier
+    };
+
+    await redis.set(`user:${userId}`, updatedUserData);
   } catch (error) {
     console.error('Error setting user tier:', error);
   }

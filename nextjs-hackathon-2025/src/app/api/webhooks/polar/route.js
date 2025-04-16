@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { setUserTier } from '@/lib/userTier';
+import { setUserTier, TIERS } from '@/lib/userTier';
 import { api } from '@/polar';
 
 export async function POST(request) {
@@ -22,7 +22,10 @@ export async function POST(request) {
     switch (event) {
       case 'subscription.created':
       case 'subscription.updated':
-      case 'checkout.session.completed':
+      case 'subscription.active':
+      case 'subscription.uncanceled':
+      case 'checkout.created':
+      case 'checkout.updated':
         // Get the subscription details
         const subscription = await api.customer.subscriptions.get({
           customerSession: data.customer_session,
@@ -35,19 +38,20 @@ export async function POST(request) {
         let tier;
         
         if (productId === process.env.NEXT_PUBLIC_POLAR_LEARNER_PRODUCT_ID) {
-          tier = 'LEARNER';
+          tier = TIERS.LEARNER;
         } else if (productId === process.env.NEXT_PUBLIC_POLAR_BOOSTED_PRODUCT_ID) {
-          tier = 'BOOSTED_LEARNER';
+          tier = TIERS.BOOSTED_LEARNER;
         } else {
-          tier = 'FREE';
+          tier = TIERS.FREE;
         }
 
-        // Update the user's tier in our database
+        // Update the user's tier in Redis
         await setUserTier(data.customer_id, tier);
         break;
 
-      case 'subscription.cancelled':
-        await setUserTier(data.customer_id, 'FREE');
+      case 'subscription.canceled':
+      case 'subscription.revoked':
+        await setUserTier(data.customer_id, TIERS.FREE);
         break;
 
       default:

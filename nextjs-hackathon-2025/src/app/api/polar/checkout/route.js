@@ -7,7 +7,6 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const productId = searchParams.get('productId');
-    console.log(productId);
 
     if (!productId) {
       return NextResponse.json(
@@ -16,17 +15,9 @@ export async function GET(request) {
       );
     }
 
-    // Ensure the product ID is in the correct format
-    const formattedProductId = productId.startsWith('polar_cl_') 
-      ? productId 
-      : `polar_cl_${productId}`;
-
-    console.log("formattedProductId");
-    console.log(formattedProductId);
-
     // Create a checkout session
     const checkoutSession = await api.checkout.sessions.create({
-      productId: formattedProductId,
+      productId: productId,
       successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/upgrade/success`,
       cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/upgrade`,
       embedOrigin: process.env.NEXT_PUBLIC_APP_URL,
@@ -38,7 +29,7 @@ export async function GET(request) {
         environment: 'sandbox'
       }
     });
-   
+
     if (!checkoutSession?.url) {
       throw new Error('Failed to generate checkout URL');
     }
