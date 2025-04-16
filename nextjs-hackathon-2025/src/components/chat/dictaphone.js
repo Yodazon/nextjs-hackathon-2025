@@ -4,7 +4,7 @@
 // Uses WebSpeech API, not compatible with Mozilla
 // Therefore more work is needed to be able to one
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RiVoiceprintFill } from "react-icons/ri";
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -15,23 +15,33 @@ const Dictaphone = ({ onTranscriptChange }) => {
 
   const {
     transcript,
+    finalTranscript,
+    interimTranscript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
-
-  const handleSend = () => {
-    if (transcript) {
-      onTranscriptChange(transcript);
-      resetTranscript();
-    }
-  };
 
   const startListening = () => {
     SpeechRecognition.startListening({
       continuous: false,
       language: selectedLanguage,
     });
+  };
+  const stopListening = () => {
+    SpeechRecognition.stopListening();
+  };
+
+  useEffect(() => {
+    console.log(transcript);
+    if (transcript && !listening) {
+      onTranscriptChange(transcript);
+      resetTranscript();
+    }
+    // stopListening();
+  }, [listening]);
+  const handleSend = () => {
+    startListening();
   };
 
   const languages = [
@@ -46,42 +56,37 @@ const Dictaphone = ({ onTranscriptChange }) => {
   // }
 
   return (
-    <div className="bg-white p-4 rounded-lg  grid grid-cols-[auto_1fr_auto]">
-      <div>
+    <div className="bg-white rounded-lg shadow-sm p-4">
+      <div className="bg-white p-4 rounded-lg  grid grid-cols-[auto_1fr_auto]">
+        <div>
+          <select
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+            className=" p-2 rounded"
+          >
+            {languages.map((language) => (
+              <option key={language.code} value={language.code}>
+                {language.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {transcript ? (
+          <p className="mt-2 px-10">{transcript}</p>
+        ) : (
+          <p className="mt-2 px-10">
+            Press the speech button to converse with the AI
+          </p>
+        )}
+
         <button
-          onClick={listening ? SpeechRecognition.stopListening : startListening}
-          className="bg-primary-main text-white p-2  rounded-xl block w-8"
+          className="bg-primary-main px-3 text-white rounded-lg block"
+          onClick={handleSend}
         >
           <RiVoiceprintFill />
         </button>
-
-        <select
-          value={selectedLanguage}
-          onChange={(e) => setSelectedLanguage(e.target.value)}
-          className=" p-2 rounded"
-        >
-          {languages.map((language) => (
-            <option key={language.code} value={language.code}>
-              {language.name}
-            </option>
-          ))}
-        </select>
       </div>
-
-      {transcript ? (
-        <p className="mt-2 px-10">{transcript}</p>
-      ) : (
-        <p className="mt-2 px-10">
-          Press the speech button to converse with the AI
-        </p>
-      )}
-
-      <button
-        className="bg-primary-main px-3 text-white rounded-lg block"
-        onClick={handleSend}
-      >
-        Send
-      </button>
     </div>
   );
 };
