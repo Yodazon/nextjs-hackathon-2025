@@ -26,6 +26,16 @@ const SettingsPage = () => {
             />
           </div>
         </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-medium">Default language</h2>
+              <p className="text-gray-500 dark:text-gray-400">
+                Switch between default langauge in app (Coming Soon...)
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </MainLayout>
   );

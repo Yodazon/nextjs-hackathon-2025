@@ -9,6 +9,7 @@ import { RiVoiceprintFill } from "react-icons/ri";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import languages from "@/lib/languages/languages";
 
 const Dictaphone = ({ onTranscriptChange }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("en-CA");
@@ -37,28 +38,38 @@ const Dictaphone = ({ onTranscriptChange }) => {
     startListening();
   };
 
-  const languages = [
-    {
-      code: "en-CA",
-      DesktopName: "English (CA)",
-      MobileName: "🇨🇦 EN",
-    },
-    {
-      code: "es-ES",
-      DesktopName: "Spanish",
-      MobileName: "🇪🇸 ES",
-    },
-    {
-      code: "fr-FR",
-      DesktopName: "French",
-      MobileName: "🇫🇷 FR",
-    },
-    {
-      code: "pl",
-      DesktopName: "Polish",
-      MobileName: "🇵🇱 PL",
-    },
-  ];
+  // const languages = [
+  //   {
+  //     code: "en-CA",
+  //     DesktopName: "English (CA)",
+  //     MobileName: "🇨🇦 EN",
+  //   },
+  //   {
+  //     code: "pl",
+  //     DesktopName: "Polish",
+  //     MobileName: "🇵🇱 PL",
+  //   },
+  //   {
+  //     code: "es-ES",
+  //     DesktopName: "Spanish",
+  //     MobileName: "🇪🇸 ES",
+  //   },
+  //   {
+  //     code: "fr-FR",
+  //     DesktopName: "French",
+  //     MobileName: "🇫🇷 FR",
+  //   },
+  //   {
+  //     code: "it-IT",
+  //     DesktopName: "Italian",
+  //     MobileName: "🇮🇹 IT",
+  //   },
+  //   {
+  //     code: "ja",
+  //     DesktopName: "Japanese",
+  //     MobileName: "🇯🇵 JP",
+  //   },
+  // ];
 
   const [isMobile, setIsMobile] = useState(false);
 
