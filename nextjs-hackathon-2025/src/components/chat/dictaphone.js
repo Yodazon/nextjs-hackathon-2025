@@ -13,23 +13,13 @@ import SpeechRecognition, {
 const Dictaphone = ({ onTranscriptChange }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("en-CA");
 
-  const {
-    transcript,
-    finalTranscript,
-    interimTranscript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-  } = useSpeechRecognition();
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
   const startListening = () => {
     SpeechRecognition.startListening({
       continuous: false,
       language: selectedLanguage,
     });
-  };
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
   };
 
   useEffect(() => {
@@ -38,7 +28,6 @@ const Dictaphone = ({ onTranscriptChange }) => {
       onTranscriptChange(transcript);
       resetTranscript();
     }
-    // stopListening();
   }, [listening]);
   const handleSend = () => {
     startListening();
@@ -57,12 +46,12 @@ const Dictaphone = ({ onTranscriptChange }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4">
-      <div className="bg-white p-4 rounded-lg  grid grid-cols-[auto_1fr_auto]">
+      <div className="bg-white p-4 rounded-lg  flex justify-between">
         <div>
           <select
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
-            className=" p-2 rounded"
+            className="p-2 rounded hover:cursor-pointer"
           >
             {languages.map((language) => (
               <option key={language.code} value={language.code}>
@@ -73,18 +62,18 @@ const Dictaphone = ({ onTranscriptChange }) => {
         </div>
 
         {transcript ? (
-          <p className="mt-2 px-10">{transcript}</p>
+          <p className="mt-2 font-semibold text-center">{transcript}</p>
         ) : (
-          <p className="mt-2 px-10">
+          <p className="mt-2 font-semibold text-center">
             Press the speech button to converse with the AI
           </p>
         )}
 
         <button
-          className="bg-primary-main px-3 text-white rounded-lg block"
+          className="bg-primary-main px-5 text-white rounded-lg block hover:cursor-pointer"
           onClick={handleSend}
         >
-          <RiVoiceprintFill />
+          <RiVoiceprintFill className="text-lg" />
         </button>
       </div>
     </div>
