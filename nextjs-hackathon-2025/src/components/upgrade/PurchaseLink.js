@@ -30,16 +30,11 @@ const PurchaseLink = ({
     };
   }, []);
 
-  // Ensure href is a valid absolute URL
+  // Ensure href is a valid Polar checkout URL
   const getValidUrl = (productId) => {
     if (!productId) return '#';
     if (productId.startsWith('http')) return productId;
-    
-    // Get the current origin (protocol + hostname + port)
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    
-    // Construct absolute URL
-    return `${origin}/api/polar/checkout?productId=${encodeURIComponent(productId)}`;
+    return `https://polar.sh/checkout/${productId}`;
   };
 
   return (
