@@ -12,7 +12,9 @@ import SpeechRecognition, {
 
 const Dictaphone = ({ onTranscriptChange }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("en-CA");
-  const [buttonColour, setButtonColour] = useState(null);
+  const [buttonColour, setButtonColour] = useState(
+    "bg-primary-main text-white"
+  );
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
 
   const startListening = () => {
@@ -36,39 +38,74 @@ const Dictaphone = ({ onTranscriptChange }) => {
   };
 
   const languages = [
-    { code: "en-CA", name: "English (CA)" },
-    { code: "es-ES", name: "Spanish" },
-    { code: "fr-FR", name: "French" },
-    { code: "pl", name: "Polish" },
+    {
+      code: "en-CA",
+      DesktopName: "English (CA)",
+      MobileName: "🇨🇦 EN",
+    },
+    {
+      code: "es-ES",
+      DesktopName: "Spanish",
+      MobileName: "🇪🇸 ES",
+    },
+    {
+      code: "fr-FR",
+      DesktopName: "French",
+      MobileName: "🇫🇷 FR",
+    },
+    {
+      code: "pl",
+      DesktopName: "Polish",
+      MobileName: "🇵🇱 PL",
+    },
   ];
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4">
-      <div className="bg-white p-4 rounded-lg  flex justify-between">
-        <div>
+      <div className="bg-white p-2 rounded-lg flex items-center gap-4">
+        <div className="flex-shrink-0">
           <select
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="p-2 rounded hover:cursor-pointer"
+            className="p-2 rounded hover:cursor-pointer border "
           >
             {languages.map((language) => (
               <option key={language.code} value={language.code}>
-                {language.name}
+                {isMobile ? language.MobileName : language.DesktopName}
               </option>
             ))}
           </select>
         </div>
 
-        {transcript ? (
-          <p className="mt-2 font-semibold text-center">{transcript}</p>
-        ) : (
-          <p className="mt-2 font-semibold text-center">
-            Press the speech button to converse with the AI
-          </p>
-        )}
+        <div
+          className={`flex-grow text-center ${isMobile ? "text-sm" : "text-xl"}`}
+        >
+          {transcript ? (
+            <p className="font-semibold">{transcript}</p>
+          ) : (
+            <p className="font-semibold">
+              Press the{" "}
+              <RiVoiceprintFill className="inline border w-5 h-5 rounded-sm bg-primary-main text-white" />{" "}
+              to converse with the AI
+            </p>
+          )}
+        </div>
 
         <button
-          className={` ${buttonColour} px-5  rounded-lg border-2 border-primary-main  block hover:cursor-pointer hover:text-primary-main hover:bg-white `}
+          className={`flex-shrink-0 w-12 h-12 flex items-center justify-center ${buttonColour} rounded-lg border-2 border-primary-main hover:cursor-pointer hover:text-primary-main hover:bg-white`}
           onClick={handleSend}
         >
           <RiVoiceprintFill className="text-lg" />
