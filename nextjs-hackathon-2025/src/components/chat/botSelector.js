@@ -5,11 +5,21 @@ export default function BotSelector({
   currentBot,
   setCurrentBot,
 }) {
+  // Handle background clicks to close the modal
+  const handleBackgroundClick = (e) => {
+    // Only close if the click was directly on the background element
+    // and not on any of its children
+    if (e.target === e.currentTarget) {
+      setShowBotSelector(false);
+    }
+  };
+
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ${
+      className={`fixed inset-0 bg-black/25 flex items-center justify-center ${
         showBotSelector ? "block" : "hidden"
       }`}
+      onClick={handleBackgroundClick}
     >
       <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
         <h2 className="text-xl font-bold mb-4">Select AI Bot</h2>
