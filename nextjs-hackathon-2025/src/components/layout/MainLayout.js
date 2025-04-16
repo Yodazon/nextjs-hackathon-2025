@@ -133,7 +133,7 @@ const MainLayout = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <p className="text-gray-500 text-sm">
-              © {new Date().getFullYear()} AI Assistant. All rights reserved.
+              © {new Date().getFullYear()} Verbero AI. All rights reserved.
             </p>
             <div className="flex space-x-4">
               <Link
