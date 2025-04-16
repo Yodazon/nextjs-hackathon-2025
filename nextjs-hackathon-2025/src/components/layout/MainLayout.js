@@ -36,7 +36,7 @@ const MainLayout = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-black text-white shadow-sm sticky top-0 z-50">
+      <header className="bg-black text-white shadow-sm sticky top-0 z-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -85,7 +85,7 @@ const MainLayout = ({ children }) => {
         <aside
           className={`fixed inset-y-0 left-0 transform ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 lg:static lg:inset-auto lg:z-0 z-40 transition-transform duration-200 ease-in-out`}
+          } lg:translate-x-0 lg:static lg:inset-auto lg:z-0 z-1 pt-10 transition-transform duration-250 ease-in-out`}
         >
           <div className="h-full w-64 bg-white shadow-lg">
             <nav className="h-full flex flex-col">
