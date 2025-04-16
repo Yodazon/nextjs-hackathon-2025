@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
 import MainLayout from "../layout/MainLayout";
-import { TIERS, getUserTier } from '@/lib/userTier';
-import { PolarEmbedCheckout } from '@polar-sh/checkout/embed';
-import PurchaseLink from './PurchaseLink';
+import { TIERS, getUserTier } from "@/lib/userTier";
+import { PolarEmbedCheckout } from "@polar-sh/checkout/embed";
+import PurchaseLink from "./PurchaseLink";
 
 const CheckIcon = ({ className }) => (
   <svg
@@ -116,8 +116,10 @@ const pricingPlans = [
       { text: "Normal Context Models", included: true },
     ],
     productId: process.env.NEXT_PUBLIC_POLAR_LEARNER_PRODUCT_ID,
-    buttonText: "Upgrade Now",
-    buttonStyle: "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700",
+    //Added because feature not implemented, issues with processing
+    buttonText: "Coming Soon",
+    buttonStyle:
+      "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700",
     isPopular: true,
   },
   {
@@ -137,7 +139,9 @@ const pricingPlans = [
       { text: "Suggest new features", included: true },
     ],
     productId: process.env.NEXT_PUBLIC_POLAR_BOOSTED_PRODUCT_ID,
-    buttonText: "Upgrade Now",
+    //Added because feature not implemented, issues with processing
+
+    buttonText: "Coming Soon",
     buttonStyle: "bg-gray-900 hover:bg-gray-800",
     isPopular: false,
   },
@@ -168,55 +172,55 @@ const UserUpgrade = () => {
       // Cleanup function
       if (initialized.current) {
         try {
-          const modal = document.querySelector('[data-polar-checkout-modal]');
+          const modal = document.querySelector("[data-polar-checkout-modal]");
           if (modal) {
             modal.remove();
           }
         } catch (error) {
-          console.error('Error cleaning up Polar checkout:', error);
+          console.error("Error cleaning up Polar checkout:", error);
         }
       }
     };
   }, []);
 
   const loadTier = async () => {
-    console.log('Auth status:', status);
-    console.log('Session:', session);
-    
-    if (status !== 'authenticated' || !session?.user?.id) {
-      console.log('Not authenticated or missing user ID');
+    console.log("Auth status:", status);
+    console.log("Session:", session);
+
+    if (status !== "authenticated" || !session?.user?.id) {
+      console.log("Not authenticated or missing user ID");
       setCurrentTier(TIERS.FREE);
       setIsLoading(false);
       return;
     }
 
     try {
-      console.log('Making request to /api/user/tier');
-      const response = await fetch('/api/user/tier', {
-        credentials: 'include',
+      console.log("Making request to /api/user/tier");
+      const response = await fetch("/api/user/tier", {
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.accessToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.accessToken}`,
         },
       });
-      
-      console.log('Response status:', response.status);
-      
+
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
         if (response.status === 401) {
-          console.log('Received 401 Unauthorized');
+          console.log("Received 401 Unauthorized");
           setCurrentTier(TIERS.FREE);
           setIsLoading(false);
           return;
         }
-        throw new Error('Failed to fetch user tier');
+        throw new Error("Failed to fetch user tier");
       }
-      
+
       const data = await response.json();
-      console.log('Received tier data:', data);
+      console.log("Received tier data:", data);
       setCurrentTier(data.tier);
     } catch (error) {
-      console.error('Error loading user tier:', error);
+      console.error("Error loading user tier:", error);
       setError(error.message);
       setCurrentTier(TIERS.FREE);
     } finally {
@@ -225,7 +229,7 @@ const UserUpgrade = () => {
   };
 
   useEffect(() => {
-    if (status === 'loading') {
+    if (status === "loading") {
       setIsLoading(true);
     } else {
       loadTier();
@@ -238,25 +242,30 @@ const UserUpgrade = () => {
       const productIdMatch = productId.match(/polar_cl_[A-Za-z0-9]+/);
       const extractedProductId = productIdMatch ? productIdMatch[0] : productId;
 
-      const response = await fetch(`/api/polar/checkout?productId=${extractedProductId}`, {
-        method: 'GET',
-      });
+      const response = await fetch(
+        `/api/polar/checkout?productId=${extractedProductId}`,
+        {
+          method: "GET",
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create checkout session');
+        throw new Error(errorData.error || "Failed to create checkout session");
       }
 
       const data = await response.json();
-      
+
       if (!data.url) {
-        throw new Error('No checkout URL received');
+        throw new Error("No checkout URL received");
       }
 
       setCheckoutUrl(data.url);
     } catch (error) {
-      console.error('Error creating checkout session:', error);
-      setError(error.message || 'Failed to create checkout session. Please try again.');
+      console.error("Error creating checkout session:", error);
+      setError(
+        error.message || "Failed to create checkout session. Please try again."
+      );
     }
   };
 
@@ -324,14 +333,20 @@ const UserUpgrade = () => {
                     Current Plan
                   </button>
                 ) : (
-                  <PurchaseLink
+                  <button
+                    disabled
+                    className="block w-full px-4 py-2 font-medium text-center text-white bg-gray-400 rounded-lg cursor-not-allowed"
+                  >
+                    Coming Soon
+                  </button>
+                  /* <PurchaseLink
                     href={plan.productId}
-                    className={`block w-full px-4 py-2 font-medium text-center text-white transition-colors rounded-lg ${plan.buttonStyle}`}
+                    className={`block w-full px-4 py-2 font-medium text-center text-white transition-colors rounded-lg ${plan.buttonStyle} cursor-not-allowed`}
                     theme="light"
                   >
                     {plan.buttonText}
                     <ArrowIcon />
-                  </PurchaseLink>
+                  </PurchaseLink> */
                 )}
               </div>
             </div>
