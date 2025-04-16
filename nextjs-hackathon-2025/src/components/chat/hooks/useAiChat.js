@@ -30,7 +30,7 @@ export function useAiChat() {
         setIsLoading(true);
         const history = await getConversationHistory(session.user.id);
         const formattedHistory = history.map((msg) => ({
-          type: msg.role === "user" ? "user" : "ai",
+          type: msg.role === "user" ? "user" : "assistant",
           content: msg.content,
         }));
         setConversations(formattedHistory);
@@ -52,7 +52,7 @@ export function useAiChat() {
     botConfig,
     systemContext = [],
     systemVariable = [],
-    shouldPlayAudio,
+    shouldPlayAudio
   ) => {
     if (!session?.user) {
       throw new Error("Please sign in to continue");
@@ -84,7 +84,7 @@ export function useAiChat() {
           })),
         ],
         botConfig.pipeName,
-        systemVariable,
+        systemVariable
       );
 
       if (aiResponse) {
@@ -102,7 +102,7 @@ export function useAiChat() {
             botType: msg.type === "user" ? null : botConfig.name,
             pipeName: msg.type === "user" ? null : botConfig.pipeName,
             chatId: currentChatId,
-          })),
+          }))
         );
 
         return aiResponse;
