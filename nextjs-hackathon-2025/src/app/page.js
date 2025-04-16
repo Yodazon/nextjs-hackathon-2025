@@ -26,11 +26,13 @@ export default function Home() {
       ) : !session ? (
         <div className="text-center py-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
-            Welcome to AI Learning Platform
+            Welcome to Verbero
           </h2>
-          <p className="text-gray-600 mb-8">
-            Please sign in to access your learning dashboard
-          </p>
+
+          <p className="text-gray-600 mb-4">Start learning by speaking </p>
+
+          <p className="text-gray-600 mb-8">Sign in below</p>
+
           <Link
             href="/auth/signin"
             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
