@@ -2,6 +2,9 @@
 
 Verbalo AI is a modern web application that helps users learn new languages through interactive conversations, quizzes, and structured lessons powered by artificial intelligence.
 
+[Youtube Link to Verbalo AI](https://youtu.be/hgUj19DdCMY)
+
+
 ## Features
 
 ### 🎯 Core Features
