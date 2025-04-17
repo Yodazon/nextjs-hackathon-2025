@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Verbero AI",
+  title: "Verbalo AI",
   description: "The App that helps you learn to speak a new language",
 };
 

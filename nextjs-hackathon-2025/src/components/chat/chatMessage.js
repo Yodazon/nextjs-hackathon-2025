@@ -1,5 +1,7 @@
-import { RiVoiceprintFill } from "react-icons/ri";
-import React from "react";
+import { RxSpeakerLoud } from "react-icons/rx";
+
+import React, { useEffect, useState } from "react";
+import AiVoice from "./aiAudio";
 
 export function ChatMessage({ messageType, content }) {
   const isUser = messageType == "user";
@@ -26,6 +28,19 @@ function UserMessage({ content }) {
 }
 
 function AiMessage({ content }) {
+  const [isPlaying, setIsPlaying] = useState("bg-primary-main text-white");
+
+  const handleAudioSubmit = async (text) => {
+    try {
+      setIsPlaying("bg-white text-primary-main");
+      await AiVoice(text);
+    } catch (error) {
+      console.error("Error Playing Audio");
+    } finally {
+      setIsPlaying("bg-primary-main text-white");
+    }
+  };
+
   return (
     <div
       className={
@@ -33,6 +48,16 @@ function AiMessage({ content }) {
       }
     >
       <p className="whitespace-pre-wrap break-words">{content}</p>
+      <div className="flex justify-end">
+        <button
+          className="mt-2 p-1   transition-colors"
+          onClick={() => handleAudioSubmit(content)}
+        >
+          <RxSpeakerLoud
+            className={`${isPlaying} text-black rounded-md border-2 black p-1  w-15 h-8`}
+          />
+        </button>
+      </div>
     </div>
   );
 }
