@@ -210,18 +210,17 @@ export async function findSimilarMessages(userId, queryText, limit = 5) {
     const results = await userIndex.query({
       vector: queryEmbedding,
       topK: limit * 2,
-      includeMetadata: true,
-      filter: {
-        userId: userId,
-        // Only get messages from the last 24 hours to prevent stale context
-        timestamp: {
-          $gte: Date.now() - 24 * 60 * 60 * 1000
-        }
-      }
+      includeMetadata: true
+    });
+
+    // Filter results to only include messages from the current user
+    const userResults = results.filter(result => {
+      const metadata = result.metadata || {};
+      return metadata.userId === userId;
     });
 
     // Rest of the grouping logic remains the same
-    const groupedResults = results.reduce((acc, result) => {
+    const groupedResults = userResults.reduce((acc, result) => {
       try {
         const metadata = result.metadata || {};
         const originalMessage = String(metadata.originalMessage || "");
