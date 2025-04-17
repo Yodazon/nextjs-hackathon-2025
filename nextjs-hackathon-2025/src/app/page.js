@@ -26,7 +26,7 @@ export default function Home() {
       ) : !session ? (
         <div className="text-center py-12">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
-            Welcome to Verbero
+            Welcome to Verbalo
           </h2>
 
           <p className="text-gray-600 mb-4">Start learning by speaking </p>

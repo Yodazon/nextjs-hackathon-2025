@@ -36,6 +36,16 @@ const SettingsPage = () => {
             </div>
           </div>
         </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-2">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-medium">Default Response Voice</h2>
+              <p className="text-gray-500 dark:text-gray-400">
+                Change default response voice (Coming Soon...)
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </MainLayout>
   );
