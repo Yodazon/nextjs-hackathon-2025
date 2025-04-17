@@ -32,6 +32,7 @@ export function useAiChat() {
         const formattedHistory = history.map((msg) => ({
           type: msg.role === "user" ? "user" : "assistant",
           content: msg.content,
+          chatId: msg.chatId,
         }));
         setConversations(formattedHistory);
       } catch (error) {
@@ -66,22 +67,28 @@ export function useAiChat() {
 
     const updatedConversations = [
       ...conversations,
-      { type: "user", content: message },
+      { type: "user", content: message, chatId: currentChatId },
     ];
     setConversations(updatedConversations);
 
     try {
+      // Get relevant context from the current chat session
       const context = await getRelevantContext(session.user.id, message);
+
+      // Filter conversations to only include messages from the current chat session
+      const currentSessionMessages = updatedConversations
+        .filter(msg => msg.chatId === currentChatId)
+        .map(msg => ({
+          role: msg.type === "user" ? "user" : "assistant",
+          content: msg.content,
+        }));
 
       const aiResponse = await AiChat(
         message,
         [
           ...systemContext,
           ...context,
-          ...updatedConversations.map((msg) => ({
-            role: msg.type === "user" ? "user" : "assistant",
-            content: msg.content,
-          })),
+          ...currentSessionMessages,
         ],
         botConfig.pipeName,
         systemVariable
@@ -91,7 +98,7 @@ export function useAiChat() {
         if (shouldPlayAudio) playAudio(aiResponse);
         const newConversations = [
           ...updatedConversations,
-          { type: "ai", content: aiResponse },
+          { type: "ai", content: aiResponse, chatId: currentChatId },
         ];
         setConversations(newConversations);
 

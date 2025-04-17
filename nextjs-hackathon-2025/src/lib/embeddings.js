@@ -211,6 +211,13 @@ export async function findSimilarMessages(userId, queryText, limit = 5) {
       vector: queryEmbedding,
       topK: limit * 2,
       includeMetadata: true,
+      filter: {
+        userId: userId,
+        // Only get messages from the last 24 hours to prevent stale context
+        timestamp: {
+          $gte: Date.now() - 24 * 60 * 60 * 1000
+        }
+      }
     });
 
     // Rest of the grouping logic remains the same
@@ -250,19 +257,16 @@ export async function findSimilarMessages(userId, queryText, limit = 5) {
       return acc;
     }, {});
 
-    // Sort chunks by similarity and return the most relevant messages
+    // Sort by timestamp and similarity
     return Object.values(groupedResults)
-      .map((message) => ({
-        ...message,
-        chunks: message.chunks
-          .sort((a, b) => a.chunkIndex - b.chunkIndex) // Sort chunks in original order
-          .map((chunk) => ({
-            content: chunk.content,
-            similarity: chunk.similarity,
-          })),
-      }))
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, limit); // Return only the requested number of messages
+      .sort((a, b) => {
+        // First sort by timestamp (newer first)
+        const timeDiff = b.timestamp - a.timestamp;
+        if (timeDiff !== 0) return timeDiff;
+        // Then by similarity score
+        return b.similarity - a.similarity;
+      })
+      .slice(0, limit);
   } catch (error) {
     console.error("Error in findSimilarMessages:", error);
     throw error;
